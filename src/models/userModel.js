@@ -123,9 +123,17 @@ const UpdateProfile = (data, userId) => {
   })
 }
 
-const GetMyProfile = (userId) => {
+const GetMyProfile = (userId, action) => {
+  const originalUrl = action
+  const strQueryA = `SELECT user_name, user_email, user_phone, gender,date_of_birth ,a.address AS primary_address, user_store, user_image, account_type FROM tb_user u, tb_customer_address a WHERE u.user_id = '${userId}' AND a.customer_id = '${userId}' AND a.primary_address = 'true'`
+  const strQueryB = `SELECT user_name, user_email, user_phone, gender,date_of_birth , primary_address, user_store, user_image, account_type FROM tb_user WHERE user_id = '${userId}'`
+  // (localhost:8001/api/user) => req.originalUrl.split('/')[3] = [undefined]
+  console.log(strQueryA)
+  const strQuery = originalUrl === undefined ? strQueryB : strQueryB
+
+  // console.log(originalUrl)
   return new Promise(function (resolve, reject) {
-    db.query(`SELECT user_name, user_email, user_phone, gender,date_of_birth ,a.address AS primary_address, user_store, user_image, account_type FROM tb_user u, tb_customer_address a WHERE u.user_id = '${userId}' AND a.customer_id = '${userId}' AND a.primary_address = 'true'`, function (error, result) {
+    db.query(strQuery, function (error, result) {
       if (!error) {
         resolve(result)
       } else {

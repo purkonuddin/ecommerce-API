@@ -232,15 +232,17 @@ const editProduct = (req, res, next) => {
 }
 
 const getProdById = async (req, res, next) => {
+  const productId = req.body.product_id || req.params.id
+  console.log(productId)
   const [result] = await Promise.all([
-    productModule.getbyid(req.params.id)
+    productModule.getbyid(productId)
   ])
 
   if (result.length === 0) {
     return res.send({
       object: 'product',
       action: 'select by product_id',
-      msg: `tidak ditemukan product dengan id ${req.params.id}`,
+      msg: `tidak ditemukan product dengan id ${productId}`,
       result: null
     })
   }
@@ -345,20 +347,6 @@ const Sort = async (req, res, next) => {
   req.body.prev_page = req.query.page > 1 ? req.query.page - 1 : undefined
   req.body.pages = paginate.getArrayPages(req)(pageCount, pageCount, req.query.page)
   req.body.data = results
-  // res.send({
-  //   object: 'products',
-  //   has_more: paginate.hasNextPages(req)(pageCount),
-  //   total_page: pageCount,
-  //   total: totalrows,
-  //   curren_page: parseInt(req.query.page),
-  //   offset: page,
-  //   hasPreviousPages: res.locals.hasPreviousPages,
-  //   hasNextPages: paginate.hasNextPages(req)(pageCount),
-  //   next_page: req.query.page <= pageCount - 1 ? parseInt(req.query.page) + 1 : undefined,
-  //   prev_page: req.query.page > 1 ? req.query.page - 1 : undefined,
-  //   pages: paginate.getArrayPages(req)(pageCount, pageCount, req.query.page),
-  //   data: results
-  // })
   next()
 }
 

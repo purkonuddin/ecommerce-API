@@ -4,16 +4,16 @@ const addToCart = (req, res, next) => {
     member_id: req.userData.user_id,
     product_id: req.body.product_id,
     product_name: req.body.product_name,
-    category: req.body.category,
+    category: req.body.product_category,
     seller: req.body.seller,
-    product_condition: req.body.product_condition,
-    product_size: req.body.product_size,
-    product_color: req.body.product_color,
-    qty: req.body.qty,
-    price: req.body.price,
+    product_condition: req.body.cart_product_condition,
+    product_size: req.body.cart_product_size,
+    product_color: req.body.cart_product_color,
+    qty: req.body.cart_qty,
+    price: req.body.product_price,
     disc: req.body.disc,
     price_aft_disc: req.body.price_aft_disc,
-    subtotal: req.body.price_aft_disc * req.body.qty,
+    subtotal: req.body.price_aft_disc * req.body.cart_qty,
     sts_items: 'pending'
   }
   //   console.log(req.userData)
@@ -26,10 +26,12 @@ const addToCart = (req, res, next) => {
       })
     }
 
+    dataCart.id = result.insertId
+
     req.body.object = 'cart'
     req.body.action = 'insert'
     req.body.msg = null
-    req.body.id = result.insertId
+    req.body.item = dataCart
 
     next()
   }).catch(err => new Error(err))

@@ -157,6 +157,7 @@ const InserToOrderTable = async (req, res, next) => {
 
 const GetCartWithStsOrderAndInsertToListOrder = async (req, res, next) => {
   const userId = req.userData.user_id
+  const orderNumber = req.body.ORDER_ID
   const data = {
     member_id: userId,
     sts_items: 'order'
@@ -186,7 +187,7 @@ const GetCartWithStsOrderAndInsertToListOrder = async (req, res, next) => {
      * sts_items: 'order'
      */
     const dataOrderDetail = {
-      order_number: req.body.ORDER_ID,
+      order_number: orderNumber,
       member_id: req.userData.user_id,
       product_id: cart.product_id,
       product_name: cart.product_name,

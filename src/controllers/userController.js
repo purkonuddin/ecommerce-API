@@ -328,13 +328,15 @@ const VerifikasiEmail = function (req, res, next) {
 }
 
 const GetUserById = async (req, res, next) => {
-  const userName = req.userData.user_id
+  const originalUrl = req.originalUrl.split('/')
+  const userId = req.userData.user_id
   const [results] = await Promise.all([
-    userModel.getMyProfile(userName)
+    userModel.getMyProfile(userId, originalUrl[3])
   ])
   req.body.object = 'user'
   req.body.action = 'get my profile data'
   req.body.myprofile = results
+  console.log(results)
 
   next()
 }
