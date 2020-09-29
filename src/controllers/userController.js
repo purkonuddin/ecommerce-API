@@ -212,12 +212,18 @@ const ForgetPassword = async (req, res, next) => {
 
 const SignUp = (req, res, next) => {
   const userName = req.body.username
-  const getusername = userModel.getusername(userName)
+  const userEmail = req.body.useremail
+  const userPhone = req.body.userphone
+  // const getusername = userModel.getusername(userName)
+  const getusername = userModel.getFieldAlreadyInUse(userName, userEmail, userPhone)
 
   getusername.then((result) => {
     if (result.length) {
-      return res.status(409).send({
-        msg: 'This username is already in use!'
+      result.forEach(element => {
+        const inUse = element.user_name === userName ? 'username' : element.user_email === userEmail ? 'email' : 'phone number'
+        return res.status(409).send({
+          msg: `This ${inUse} is already in use!`
+        })
       })
     } else {
       // username is available
@@ -272,11 +278,11 @@ const SignUp = (req, res, next) => {
                 const emailContent = `<p>Hai ${user.user_email},</p>' +
                 <p>terimakasih telah membuat akun di aplikasi kami.</p></br>
                 <ul>
-                <li>Nama : ${user.user_id}</li>
-                <li>Nama : ${user.user_name}</li>
-                <li>Nama : ${req.body.password}</li>
-                <li>Nama : ${user.account_type}</li>
-                <li>Nama : ${user.user_phone}</li>
+                <li>user_id : ${user.user_id}</li>
+                <li>user_name : ${user.user_name}</li>
+                <li>password : ${req.body.password}</li>
+                <li>account_type : ${user.account_type}</li>
+                <li>user_phone : ${user.user_phone}</li>
                 </ul></br>
                 Silahkan verifikasi email dengan mengklik link berikut:</br>
                 <a href=http://${req.headers.host}/verifikasi-email/${token}>Konfirmasi</a>`

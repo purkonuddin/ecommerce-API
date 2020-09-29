@@ -135,6 +135,18 @@ const GetMyProfile = (userId) => {
   })
 }
 
+const GetFieldAlreadyInUse = (username, email, phone) => {
+  return new Promise(function (resolve, reject) {
+    db.query(`SELECT * FROM tb_user WHERE LOWER(user_name) = LOWER(${db.escape(username)}) OR user_email = '${email}' OR user_phone = '${phone}'`, function (error, result) {
+      if (!error) {
+        resolve(result)
+      } else {
+        reject(new Error(error))
+      }
+    })
+  })
+}
+
 module.exports = {
   updateProfile: UpdateProfile,
   updatepassword: updatepassword,
@@ -144,5 +156,6 @@ module.exports = {
   updatemailverifiedstatus: updatemailverifiedstatus,
   getusername: getusername,
   insertnewuser: insertnewuser,
-  getMyProfile: GetMyProfile
+  getMyProfile: GetMyProfile,
+  getFieldAlreadyInUse: GetFieldAlreadyInUse
 }

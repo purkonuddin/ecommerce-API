@@ -24,7 +24,7 @@ const SendEmail = (req, res, next) => {
       return res.status(404).send({
         result: {
           object: 'users',
-          action: `forgot password, send password to ${userEmail}`,
+          action: `kirim email ke  ${userEmail}`,
           msg: 'periksa koneksi internet, gagal mengirim pesan',
           err: err
         }
@@ -32,8 +32,8 @@ const SendEmail = (req, res, next) => {
     }
 
     req.body.object = 'users'
-    req.body.action = 'forgot password'
-    req.body.msg = `password telah dikirim ke ${req.body.email}`
+    req.body.action = 'kirim email'
+    req.body.msg = `periksa email anda, pesan telah dikirim ke ${userEmail}`
     next()
   })
 }
