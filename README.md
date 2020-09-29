@@ -45,11 +45,11 @@ DATABASE=post
 <p>signup</p> <span>[post] http://localhost:8001/api/sign-up</span>
 <p>login</p> <span>[post] http://localhost:8001/api/user/login</span>
 <p>logout</p> <span>[get] http://localhost:8001/api/user/logout</span>
-<p>reset password</p> <span>[post] http://localhost:8001/api/update-password</span>
+<p>reset password</p> <span>[post] http://localhost:8001/api/user/update-password</span>
 <p>get my profile</p> <span>[get] http://localhost:8001/api/user</span>
 <p>edit my profile</p> <span>[patch] http://localhost:8001/api/user/edit-profile</span>
-<p>verifi email</p> <span>[get] http://localhost:8001/api/verifikasi-email/3adec4cc7d3b97ca91198c11e4c6eec406f72f68</span>
-<p>forget password</p> <span>[post] http://localhost:8001/api/forgot-password</span>
+<p>verifi email</p> <span>[get] http://localhost:8001/api/user/verifikasi-email/:token</span>
+<p>forget password</p> <span>[post] http://localhost:8001/api/user/forgot-password</span>
 <p>add address for customer</p> <span>[post] http://localhost:8001/api/user/customer-address</span>
 <p>get all addres for customer</p> <span>[get] http://localhost:8001/api/user/customer-address</span>
 

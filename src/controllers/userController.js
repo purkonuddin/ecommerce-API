@@ -2,158 +2,217 @@ const userModel = require('../models/userModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const gp = require('../helpers/generate-password')
-const nodemailer = require('nodemailer')
 var async = require('async')
 const customerAddressModel = require('../models/customerAddressModel')
+const crypto = require('crypto')
 
-const Index = (req, res) => {
-  res.json({ name: 'user page' })
-}
+const LoginRev = async (req, res, next) => {
+  const loginEmail = req.body.login_email
+  const loginPassword = req.body.login_password
 
-const Login = (req, res, next) => {
-  const Login = userModel.login(req.body.login_email)
-  Login.then((result) => {
-    if (!result.length) {
-      return res.status(401).send({
-        msg: 'Email or password is incorrect!'
-      })
-    }
+  const [results] = await Promise.all([
+    userModel.login(loginEmail)
+  ])
 
-    //  cek emailverified status 0
-    if (result[0].email_verified === '0') {
-      return res.status(401).send({
-        status: 'email_verified = 0',
-        msg: `cek email ${result[0].user_email} untuk verifikasi, atau melalui halaman verifikasi account`
-      })
-    }
-
-    // check password
-    bcrypt.compare(req.body.login_password, result[0].user_password, (bErr, bResult) => {
-    //   wrong password
-      if (bErr) {
-        // throw bErr
-        return res.status(401).send({
-          msg: 'bErr: Username or password is incorrect!'
-        })
-      }
-
-      if (bResult) {
-        const token = jwt.sign({
-          user_name: result[0].user_name,
-          user_id: result[0].user_id,
-          account_type: result[0].account_type,
-          user_store: result[0].user_store
-        }, 'SECRETKEY', { expiresIn: '7d' })
-        const lastlogin = userModel.setlastlogin(result[0].user_id)
-        lastlogin.then(() => {}).catch(err => new Error(err))
-        return res.status(200).send({
-          msg: 'Logged in!',
-          token: token,
-          user: result[0]
-        })
-      }
-
-      return res.status(401).send({
-        msg: '!bResult: Username or password is incorrect!',
-        bResult,
-        userid: result[0].user_id
-      })
+  // console.log(results)
+  if (results.length <= 0) {
+    return res.status(401).send({
+      object: 'users',
+      action: 'login',
+      msg: 'Email or password is incorrect!'
     })
-  }).catch(err => new Error(err))
-}
-
-const Logout = (req, res) => {
-  if (!req.userData === undefined || req.userData.user_id === '') {
-    return res.json({ msg: 'userData undefined' })
   }
 
-  userModel.setemailverifytoken(null, req.userData.user_id).then((result) => {
-    if (!result) {
-      return res.send({ msg: 'logout error' })
+  //  cek emailverified status 0
+  if (results[0].email_verified === '0') {
+    return res.status(401).send({
+      object: 'users',
+      action: 'login',
+      msg: `cek email ${results[0].user_email} untuk verifikasi, atau melalui halaman verifikasi account`
+    })
+  }
+
+  // check password
+  bcrypt.compare(loginPassword, results[0].user_password, (bErr, bResult) => {
+    if (bErr) {
+      // throw bErr
+      return res.status(401).send({
+        object: 'users',
+        action: 'login',
+        msg: 'Username or password is incorrect!'
+      })
     }
 
-    res.send({
-      msg: 'logout',
-      result
-    })
-  }).catch(err => new Error(err))
+    const userData = {
+      user_name: results[0].user_name,
+      user_id: results[0].user_id,
+      account_type: results[0].account_type,
+      user_store: results[0].user_store
+    }
+
+    const token = jwt.sign(userData, 'SECRETKEY', { expiresIn: '7d' })
+
+    const lastlogin = userModel.setlastlogin(results[0].user_id)
+    lastlogin.then(() => {}).catch(err => new Error(err))
+    req.body.object = 'user'
+    req.body.action = 'login'
+    req.body.msg = null
+    req.body.user_id = results[0].user_id
+    req.body.user_name = results[0].user_name
+    req.body.account_type = results[0].account_type
+    req.body.user_store = results[0].user_store
+    req.body.user_image = results[0].user_image
+    req.body.token = token
+    req.body.login_password = results[0].user_password
+    req.body.login_email = results[0].user_email
+
+    next()
+  })
 }
 
-const UpdatePassword = (req, res, next) => {
+const Logout = async (req, res, next) => {
+  const userId = req.userData.user_id
+  const [results] = await Promise.all([
+    userModel.setemailverifytoken(null, userId)
+  ])
+
+  // console.log(results)
+  /**
+   * fieldCount: 0,
+   * affectedRows: 1,
+   * insertId: 0,
+   * serverStatus: 2,
+   * warningCount: 0,
+   * message: '(Rows matched: 1  Changed: 0  Warnings: 0',
+   * protocol41: true,
+   * changedRows: 0
+   */
+
+  if (results.affectedRows <= 0) {
+    return res.send({
+      object: 'user',
+      action: 'logout',
+      msg: 'gagal logout'
+    })
+  }
+
+  const userData = {
+    user_name: null,
+    user_id: null,
+    account_type: null,
+    user_store: null
+  }
+
+  req.body.object = 'users'
+  req.body.action = 'logout'
+  req.body.msg = null
+  req.userData = userData
+
+  next()
+}
+
+const UpdatePassword = async (req, res, next) => {
   const newpwd = req.body.newpassword
-  const userData = req.userData
+  const userId = req.userData.user_id
   bcrypt.hash(newpwd, 10, (err, hash) => {
     if (err) {
       return res.status(500).send({
         msg: err
       })
     } else {
-      userModel.updatepassword(hash, userData.user_id).then((result) => {
-        res.json({
-          result: result,
-          newpwd: newpwd
-        })
+      const updatePassword = userModel.updatepassword(hash, userId)
+      updatePassword.then((result) => {
+        if (result.affectedRows <= 0) {
+          return res.send({
+            object: 'user',
+            action: 'update password',
+            msg: 'gagal update password'
+          })
+        }
+
+        req.body.object = 'users'
+        req.body.action = 'update password'
+        req.body.msg = null
+        req.body.user = req.userData
+        req.body.newpassword = newpwd
+
+        next()
       }).catch(err => new Error(err))
     }
   })
 }
 
-const ForgetPassword = (req, res, next) => {
+const ForgetPassword = async (req, res, next) => {
   const pwd = gp.generate(8)
+  const userEmail = req.body.email
 
-  userModel.login(req.body.email).then((result) => {
-    if (!result.length) {
-      return res.send(`<p>err : email ${req.body.email} tidak terdaftar</p>`)
-    }
+  const [results] = await Promise.all([
+    userModel.login(userEmail)
+  ])
 
-    const userid = result[0].user_id
-
-    bcrypt.hash(pwd, 10, (err, hash) => {
-      if (err) {
-        return res.status(500).send({
-          msg: err
-        })
-      } else {
-        const password = hash
-        userModel.updatepassword(password, userid).then(() => {}).catch(err => new Error(err))
-        // return res.send({ pwd: pwd, hash: hash })
-        var smtpTransport = nodemailer.createTransport({
-          service: 'Gmail',
-          auth: {
-            user: 'purkonud12119617@gmail.com',
-            pass: 'AmikBsi12119617'
-          }
-        })
-        var mailOptions = {
-          to: req.body.email,
-          from: 'no-reply@gmail.com',
-          subject: 'Email Verification',
-          html: `<p>Hai ${result[0].user_email},</p>' +
-                <p>password anda telah di perbarui, gunakan untuk login.</p></br>
-                <ul>
-                <li>id : ${result[0].user_id}</li>
-                <li>password : ${pwd}</li>
-                <li>nama : ${result[0].user_name}</li> 
-                </ul></br>`
-        }
-        smtpTransport.sendMail(mailOptions, function (err) {
-          if (err) {
-            console.log(err)
-            return res.status(404).send({ err: err })
-          }
-          // req.flash('SaveSuccess', 'Email Verifikasi telah dikirim ke ' + req.body.useremail)
-          return res.status(201).send({
-            status: 'forgot password',
-            msg: `password telah dikirim ke ${req.body.email}`
-          })
-        })
-      }
+  if (results.length <= 0) {
+    return res.send({
+      object: 'user',
+      action: 'forgot password',
+      msg: `email ${req.body.email} tidak terdaftar</p>`
     })
-  }).catch(err => new Error(err))
+  }
+
+  const userid = results[0].user_id
+  const userName = results[0].user_name
+
+  bcrypt.hash(pwd, 10, (err, hash) => {
+    if (err) {
+      return res.status(500).send({
+        msg: err
+      })
+    } else {
+      const password = hash
+      userModel.updatepassword(password, userid).then((result) => {
+        // console.log(result)
+        /*
+        fieldCount: 0,
+        affectedRows: 1,
+        insertId: 0,
+        serverStatus: 2,
+        warningCount: 0,
+        message: '(Rows matched: 1  Changed: 1  Warnings: 0',
+        protocol41: true,
+        changedRows: 1
+        */
+
+        if (result.affectedRows !== 1 && result.changedRows !== 1) {
+          return res.send({
+            result: {
+              object: 'users',
+              action: 'forgot password',
+              msg: 'gagal update password'
+            }
+          })
+        }
+
+        // kirim email
+        const emailContent = `<p>Hai ${userEmail},</p>
+                            <p>password anda telah di perbarui, gunakan untuk login.</p></br>
+                            <ul>
+                              <li>nama : ${userName}</li>
+                              <li>password : ${pwd}</li>
+                            </ul>`
+
+        req.body.email_content = emailContent
+        req.body.email_subject = 'Email Verification'
+        req.body.user_name = userName
+        req.body.user_email = userEmail
+
+        next()
+      }).catch(err => new Error(err))
+    }
+  })
 }
 
 const SignUp = (req, res, next) => {
-  const getusername = userModel.getusername(req.body.username)
+  const userName = req.body.username
+  const getusername = userModel.getusername(userName)
 
   getusername.then((result) => {
     if (result.length) {
@@ -208,39 +267,24 @@ const SignUp = (req, res, next) => {
               },
               // kirim email konfirmasi ke user
               function (token, user, done) {
-                var smtpTransport = nodemailer.createTransport({
-                  service: 'Gmail',
-                  auth: {
-                    user: 'purkonud12119617@gmail.com',
-                    pass: 'AmikBsi12119617'
-                  }
-                })
-                var mailOptions = {
-                  to: req.body.useremail,
-                  from: 'no-reply@gmail.com',
-                  subject: 'Email Verification',
-                  html: `<p>Hai ${user.user_email},</p>' +
-                      <p>terimakasih telah membuat akun di aplikasi kami.</p></br>
-                      <ul>
-                      <li>Nama : ${user.user_id}</li>
-                      <li>Nama : ${user.user_name}</li>
-                      <li>Nama : ${req.body.password}</li>
-                      <li>Nama : ${user.account_type}</li>
-                      <li>Nama : ${user.user_phone}</li>
-                      </ul></br>
-                      Silahkan verifikasi email dengan mengklik link berikut:</br>
-                      <a href=http://${req.headers.host}/verifikasi-email/${token}>Konfirmasi</a>`
-                }
-                smtpTransport.sendMail(mailOptions, function (err) {
-                  if (err) {
-                    console.log(err)
-                  }
-                  req.flash('SaveSuccess', 'Email Verifikasi telah dikirim ke ' + req.body.useremail)
-                  return res.status(201).send({
-                    status: 'registered',
-                    msg: `Email Verifikasi telah dikirim ke ${req.body.useremail}`
-                  })
-                })
+                const userEmail = req.body.useremail
+                const emailSubject = 'Email Verification'
+                const emailContent = `<p>Hai ${user.user_email},</p>' +
+                <p>terimakasih telah membuat akun di aplikasi kami.</p></br>
+                <ul>
+                <li>Nama : ${user.user_id}</li>
+                <li>Nama : ${user.user_name}</li>
+                <li>Nama : ${req.body.password}</li>
+                <li>Nama : ${user.account_type}</li>
+                <li>Nama : ${user.user_phone}</li>
+                </ul></br>
+                Silahkan verifikasi email dengan mengklik link berikut:</br>
+                <a href=http://${req.headers.host}/verifikasi-email/${token}>Konfirmasi</a>`
+
+                req.body.user_email = userEmail
+                req.body.email_subject = emailSubject
+                req.body.email_content = emailContent
+                next()
               }
             ])
           }).catch(err => {
@@ -256,14 +300,22 @@ const SignUp = (req, res, next) => {
 
 const VerifikasiEmail = function (req, res, next) {
   const token = req.params.token
-  //   res.json({ token })
-  // verifikasi token dengan database user
   const user = userModel.updatemailverifiedstatus(token)
   user.then((result) => {
-    res.status(201).send({
-      result: result,
-      token: token
-    })
+    if (result.affectedRows !== 1 && result.changedRows !== 1) {
+      return res.send({
+        result: {
+          object: 'users',
+          action: 'verifikasi email',
+          msg: 'gagal verifikasi'
+        }
+      })
+    }
+
+    req.body.object = 'users'
+    req.body.action = 'verifikasi email'
+    req.body.msg = 'verifikasi berhasil, silahkan login untuk melanjutkan'
+    next()
   }).catch((error) => {
     console.log(error)
   })
@@ -361,8 +413,7 @@ const GetAllCustomerAddress = async (req, res, next) => {
 }
 
 module.exports = {
-  index: Index,
-  login: Login,
+  login: LoginRev,
   logout: Logout,
   updatePassword: UpdatePassword,
   forgetPassword: ForgetPassword,

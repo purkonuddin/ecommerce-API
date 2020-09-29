@@ -91,7 +91,7 @@ module.exports = {
     }
     next()
   },
-  validateSignupSeller: (req, res, next) => {
+  validateSignup: (req, res, next) => {
     // account type seller or customer
     if (!req.body.account_type) {
       req.body.account_type = 'customer'
