@@ -4,8 +4,8 @@ Ecommerce API is a ecommerce application specially for backend only. Built with 
 Express.js is a web application framework for Node.js. [More about Express](https://en.wikipedia.org/wiki/Express.js)
 
 ## Built With
-![Express.js] (https://img.shields.io/badge/Express.js-4.x-orange.svg?style=rounded-square)
-![Node.js](https://img.shields.io/badge/Node.js-v.10.16-green.svg?style=rounded-square)
+[Express.js] (https://img.shields.io/badge/Express.js-4.x-orange.svg?style=rounded-square)
+![[Node.js](https://img.shields.io/badge/Node.js-v.10.16-green.svg?style=rounded-square)
 
 ## Requirements
 1. <a href="https://nodejs.org/en/download/">Node Js</a>
@@ -19,7 +19,7 @@ Express.js is a web application framework for Node.js. [More about Express](http
 3. Make new file a called **.env**, set up first [here](#set-up-env-file)
 4. Turn on Web Server and MySQL can using Third-party tool like xampp, etc.
 5. Create a database with the name post, and Import file [ecommerce.sql](ecommerce.sql) to **phpmyadmin**
-6. Open Postman desktop application or Chrome web app extension that has installed before, [collection link] (https://www.getpostman.com/collections/9b37cdb72de14add6727)
+6. Open Postman desktop application or Chrome web app extension that has installed before, <a href="https://www.getpostman.com/collections/9b37cdb72de14add6727">collection_link</a> 
 7. Choose HTTP Method and enter request url.(ex. localhost:8001/api)
 8. You can see all the end point [here](#end-point)
 
