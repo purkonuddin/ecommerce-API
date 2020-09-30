@@ -9,7 +9,7 @@ const SendEmail = (req, res, next) => {
     service: 'Gmail',
     auth: {
       user: 'purkonud12119617@gmail.com',
-      pass: 'AmikBsi12119617'
+      pass: '*************'
     }
   })
   var mailOptions = {
