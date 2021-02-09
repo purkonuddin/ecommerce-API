@@ -1,15 +1,18 @@
 {
-  "name": "resthub",
+  "name": "ecommerce-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "<h1 align=\"center\">ExpressJS - ecommerce API</h1> Ecommerce API is a ecommerce application specially for backend only. Built with NodeJs using the ExpressJs Framework. Express.js is a web application framework for Node.js. ![More_about_Express](https://en.wikipedia.org/wiki/Express.js)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js"
   },
-  "author": "",
+  "author": "purkonuddin <purkonud12119617@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "compression": "^1.7.4",
+    "helmet": "^4.4.1",
+    "morgan": "^1.10.0",
     "async": "^3.2.0",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
@@ -27,6 +30,7 @@
     "nodemailer": "^6.4.11",
     "sharp": "^0.26.1",
     "util": "^0.12.3",
+    "swagger-ui-express": "^4.1.6",
     "uuid": "^8.3.0"
   },
   "devDependencies": {
@@ -36,5 +40,13 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/purkonuddin/ecommerce-API.git"
+  },
+  "bugs": {
+    "url": "https://github.com/purkonuddin/ecommerce-API/issues"
+  },
+  "homepage": "https://github.com/purkonuddin/ecommerce-API#readme"
 }

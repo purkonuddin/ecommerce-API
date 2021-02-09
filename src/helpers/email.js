@@ -8,8 +8,8 @@ const SendEmail = (req, res, next) => {
   var smtpTransport = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
-      user: 'purkonud12119617@gmail.com',
-      pass: 'AmikBsi12119617'
+      user: 'purkonuddin25@gmail.com',
+      pass: 'ArkademyB14'
     }
   })
   var mailOptions = {

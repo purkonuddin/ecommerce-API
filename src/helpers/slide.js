@@ -6,7 +6,7 @@ module.exports = {
       })
     }
 
-    if (req.body.slide_image === '') {
+    if (req.body.files === '') {
       return res.status(400).send({
         msg: 'slide_image tidak boleh kosong'
       })

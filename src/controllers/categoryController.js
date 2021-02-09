@@ -8,7 +8,6 @@ const InsertNewCategory = async (req, res, next) => {
     category_id: categoryId,
     category_name: req.body.category_name,
     category_image: req.body.files
-    // created_at: 'now()'
   }
 
   const [results] = await Promise.all([

@@ -1,0 +1,1206 @@
+{
+    "info": {
+      "title": "Ecommerce - Documenting REST API's",
+      "version": "1.0.0",
+      "description": "This is an implementation of how to use RESTful API's using SWAGGER"
+    },
+    "host": "localhost:8001/api/v1",
+    "basePath": "/",
+    "swagger": "2.0",
+    "paths": {
+      "/": {
+        "get": {
+          "description": "Returns the homepage",
+          "responses": {
+            "200": {
+              "description": "RestFull Api with nodejs, expressjs and postgress, and sweger testing"
+            }
+          }
+        }
+      },
+      "/user": {
+        "get": {
+          "description": "User's data",
+          "tags": ["Users"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "$ref": "#/parameters/token"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Users",
+              "schema": {
+                "type": "array",
+                "$ref": "#/definitions/User"
+              }
+            }
+          }
+        }
+      },
+      "/user/sign-up": {
+        "post": {
+          "description": "Registration new user",
+          "tags": ["Users"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "$ref": "#/parameters/account_type"
+            },
+            {
+              "$ref": "#/parameters/username"
+            },
+            {
+              "$ref": "#/parameters/password"
+            },
+            {
+              "$ref": "#/parameters/password_repeat"
+            }, 
+            {
+              "$ref": "#/parameters/useremail"
+            },
+            {
+              "$ref": "#/parameters/userphone"
+            },
+            {
+              "$ref": "#/parameters/userstore"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "users",
+              "schema": {
+                "type": "object",
+                "$ref": "#/definitions/Sign-up"
+              }
+            }
+          }
+        } 
+      },
+      "/user/login": {  
+        "post": {
+            "description": "Login to the application",
+            "tags": ["Users"],
+            "produces": ["application/json"],
+            "parameters": [
+              {
+                "$ref": "#/parameters/login_email"
+              },
+              {
+                "$ref": "#/parameters/login_password"
+              }
+            ],
+            "responses": {
+              "200": {
+                "description": "login",
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/definitions/Login"
+                }
+              }
+            }
+          }
+      },
+      "/user/edit-profile": { 
+        "patch": {
+          "description": "Returns users",
+          "tags": ["Users"],
+          "produces": ["application/json"],
+          "parameters": [ 
+            {
+              "$ref": "#/parameters/token"
+            },
+            {
+              "$ref": "#/parameters/user_name"
+            },
+            {
+              "$ref": "#/parameters/user_email"
+            },
+            {
+              "$ref": "#/parameters/user_phone"
+            },
+            {
+              "$ref": "#/parameters/gender"
+            },
+            {
+              "$ref": "#/parameters/date_of_birth"
+            },
+            {
+              "$ref": "#/parameters/images"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "user's data",
+              "schema": {
+                "type": "object",
+                "$ref": "#/definitions/EditProfile"
+              }
+            }
+          }
+        }
+      },
+      "/user/update-password": {
+        "post": {
+          "description": "Update password",
+          "tags": ["Users"],
+          "produces": ["application/json"],
+          "parameters": [ 
+            {
+              "$ref": "#/parameters/token"
+            },
+            {
+              "$ref": "#/parameters/newpassword"
+            },
+            {
+              "$ref": "#/parameters/newpassword_repeat"
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "password updated"
+            }
+          }
+        }
+      },
+      "/user/forgot-password": {
+        "post": {
+          "description": "forgot password",
+          "tags": ["Users"],
+          "produces": ["application/json"],
+          "parameters": [ 
+            {
+              "$ref": "#/parameters/email"
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "forgot password"
+            }
+          }
+        }
+      },
+      "/user/customer-address": {
+        "post": {
+          "description": "customer-address",
+          "tags": ["Users"],
+          "produces": ["application/json"],
+          "parameters": [ 
+            {
+              "$ref": "#/parameters/token"
+            },{
+              "$ref": "#/parameters/address"
+            },{
+              "$ref": "#/parameters/primary_address"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "post customer address"
+            }
+          }
+        },
+        "get": {
+          "description": "user's address",
+          "tags": ["Users"],
+          "produces": ["application/json"],
+          "parameters": [ 
+            {
+              "$ref": "#/parameters/token"
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "get user's address"
+            }
+          }
+        }
+      },
+      "/user/logout":{
+        "get": {
+          "description": "user's address",
+          "tags": ["Users"],
+          "produces": ["application/json"],
+          "parameters": [ 
+            {
+              "$ref": "#/parameters/token"
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "get user's address"
+            }
+          }
+        }
+      }, 
+      "/products":{ 
+        "get": {
+          "description": "get products by query",
+          "tags": ["Products"],
+          "produces": ["application/json"],
+          "parameters": [ 
+            {
+              "$ref": "#/parameters/product_name"
+            },{
+              "$ref": "#/parameters/product_category"
+            },{
+              "$ref": "#/parameters/seller"
+            },{
+              "$ref": "#/parameters/product_condition"
+            },{
+              "$ref": "#/parameters/order_by"
+            },{
+              "$ref": "#/parameters/sort"
+            },{
+              "$ref": "#/parameters/limit"
+            } ,{
+              "$ref": "#/parameters/page"
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "products list"
+            }
+          }
+        },
+        "post": {
+          "description": "post new products",
+          "tags": ["Products"],
+          "produces": ["application/json"],
+          "parameters": [ 
+            {
+              "$ref": "#/parameters/token"
+            },{
+              "$ref": "#/parameters/product_name2"
+            },{
+              "$ref": "#/parameters/product_description"
+            },{
+              "$ref": "#/parameters/images"
+            },{
+              "$ref": "#/parameters/product_category2"
+            },{
+              "$ref": "#/parameters/product_price"  
+            },{
+              "$ref": "#/parameters/disc"
+            },{
+              "$ref": "#/parameters/product_stock"
+            } ,{
+              "$ref": "#/parameters/seller2"
+            } ,{
+              "$ref": "#/parameters/product_rating"
+            },{
+              "$ref": "#/parameters/product_condition2"
+            },{
+              "$ref": "#/parameters/product_size"
+            },{
+              "$ref": "#/parameters/product_color"
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "an new product"
+            }
+          }
+        }
+      },
+      "/products/{id}":{
+        "get": {
+          "description": "get products by id",
+          "tags": ["Products"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema":{
+                "type": "integer",
+                "minimum":1
+              }
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "get a product by id"
+            }
+          }
+        },
+        "delete": {
+          "description": "get products by id",
+          "tags": ["Products"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema":{
+                "type": "integer",
+                "minimum":1
+              }
+            }
+          ]
+        },
+        "patch": {
+          "description": "update products by id",
+          "tags": ["Products"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "$ref": "#/parameters/token"
+            },
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema":{
+                "type": "integer",
+                "minimum":1
+              }
+            },{
+              "$ref": "#/parameters/product_name2"
+            },{
+              "$ref": "#/parameters/product_description"
+            },{
+              "$ref": "#/parameters/product_category2"
+            },{
+              "$ref": "#/parameters/product_price"
+            },{
+              "$ref": "#/parameters/disc"
+            },{
+              "$ref": "#/parameters/product_stock"
+            },{
+              "$ref": "#/parameters/seller2"
+            },{
+              "$ref": "#/parameters/product_rating"
+            },{
+              "$ref": "#/parameters/product_condition2"
+            },{
+              "$ref": "#/parameters/product_size"
+            },{
+              "$ref": "#/parameters/product_color"
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "fetch a product by id"
+            },
+            "400":{
+              "description": "invalid falue"
+            }
+          }
+        }
+      },
+      "/order/addToCart":{
+        "post":{
+          "description": "add To Cart",
+          "tags": ["Order"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "$ref": "#/parameters/token"
+            },
+            {
+              "$ref": "#/parameters/product_id"
+            },
+            {
+              "$ref": "#/parameters/cart_product_condition"
+            },
+            {
+              "$ref": "#/parameters/cart_product_size"
+            },
+            {
+              "$ref": "#/parameters/cart_product_color"
+            },
+            {
+              "$ref": "#/parameters/cart_qty"
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "order - add to cart"
+            },
+            "400":{
+              "description": "invalid falue"
+            }
+          }
+        }
+      },
+      "/order/changeStsItemAtChart":{
+        "patch":{
+          "description": "after products added to cart the Status Item on table is \"menunggu\", change Status Item on Chart to \"order\" before create order's process",
+          "tags": ["Order"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "$ref": "#/parameters/token"
+            },{
+              "$ref": "#/parameters/product_id"
+            },{
+              "$ref": "#/parameters/qty"
+            },{
+              "$ref": "#/parameters/sts_items"
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "order"
+            },
+            "400":{
+              "description": "invalid falue"
+            }
+          }
+        }
+      },
+      "/order/create-order":{
+        "post":{
+          "description": "create-order",
+          "tags": ["Order"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "$ref": "#/parameters/token"
+            },
+            {
+              "$ref": "#/parameters/order_date"
+            },
+            {
+              "$ref": "#/parameters/expire_date"
+            },
+            {
+              "$ref": "#/parameters/shiping_price"
+            },
+            {
+              "$ref": "#/parameters/total_price"
+            },
+            {
+              "$ref": "#/parameters/discount"
+            },
+            {
+              "$ref": "#/parameters/payment_type"
+            },
+            {
+              "$ref": "#/parameters/payment_total"
+            },
+            {
+              "$ref": "#/parameters/shiping_courir"
+            },
+            {
+              "$ref": "#/parameters/shiping_city"
+            },
+            {
+              "$ref": "#/parameters/shiping_address"
+            },
+            {
+              "$ref": "#/parameters/sts_order"
+            },
+            {
+              "$ref": "#/parameters/sts_payment"
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "order"
+            },
+            "400":{
+              "description": "invalid falue"
+            }
+          }
+        }
+      },
+      "/category":{
+        "get":{
+          "description": "Category",
+          "tags": ["Category"],
+          "produces": ["application/json"],
+          "parameters": [
+             
+          ],
+          "responses": {
+            "200": {
+              "description": "Category"
+            },
+            "400":{
+              "description": "invalid falue"
+            }
+          }
+        },
+        "post":{
+          "description": "Category",
+          "tags": ["Category"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "$ref": "#/parameters/token"
+            },{
+              "$ref": "#/parameters/category_name"
+            },{
+              "$ref": "#/parameters/images"
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "Category"
+            },
+            "400":{
+              "description": "invalid falue"
+            }
+          }
+        }
+      },
+      "/category/{category_id}":{
+        "patch":{
+          "description": "Category",
+          "tags": ["Category"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "$ref": "#/parameters/token"
+            },
+            {
+              "name": "category_id",
+              "in": "path",
+              "required": true,
+              "schema":{
+                "type": "string" 
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Category"
+            },
+            "400":{
+              "description": "invalid falue"
+            }
+          }
+        }
+      },
+      "/slide":{
+        "post":{
+          "description": "slide",
+          "tags": ["Slide"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "$ref": "#/parameters/token"
+            },{
+              "$ref": "#/parameters/slide_name"
+            },{
+              "$ref": "#/parameters/images"
+            },{
+              "$ref": "#/parameters/url"
+            }  
+          ],
+          "responses": {
+            "200": {
+              "description": "slide"
+            },
+            "400":{
+              "description": "invalid falue"
+            }
+          }
+        }
+      }
+    },
+    "definitions": { 
+      "Sign-up": {
+        "required":["username", "useremail", "password", "password_repeat", "userphone"],
+        "properties": {
+          "account_type": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "useremail": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "password_repeat": {
+            "type": "string"
+          },
+          "userphone": {
+            "type": "string"
+          },
+          "userstore": {
+            "type": "string"
+          },  
+          "object": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "msg": {
+            "type": "string"
+          }
+        }
+      },
+      "Login": {
+        "required": ["login_email", "login_password"],
+        "properties": {
+          "login_email": {
+            "type": "string"
+          },
+          "login_password": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "string"
+          },
+          "user_name": {
+            "type": "string"
+          },
+          "account_type": {
+            "type": "string"
+          },
+          "user_store": {
+            "type": "string"
+          },
+          "user_image": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "User": {
+        "required": ["username", "password", "name", "email" ],
+        "properties": {
+          "user_name": {
+            "type": "string"
+          },
+          "user_email": {
+            "type": "string"
+          },
+          "user_phone": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "date_of_birth": {
+            "type": "string"
+          },
+          "primary_address": {
+            "type": "string"
+          },
+          "user_store": {
+            "type": "string"
+          },
+          "user_image": {
+            "type": "string"
+          },
+          "account_type": {
+            "type": "string"
+          }
+        }
+      },
+      "EditProfile":{
+        "required":[],
+        "properties":{
+          "user_name": {
+            "type": "string"
+          },
+          "user_email": {
+            "type": "string"
+          },
+          "user_phone": {
+            "type": "string"
+          },
+          "gender": {
+            "type": "string"
+          },
+          "date_of_birth": {
+            "type": "string"
+          },
+          "files": {
+            "type": "string"
+          },
+          "file_prefix": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string"
+          },
+          "msg": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {},
+    "parameters": {  
+      "account_type": {
+        "name": "account_type",
+        "description": "account_type.",
+        "in": "formData",
+        "required": false,
+        "type": "string"
+      },
+      "username": {
+        "name": "username",
+        "description": "Username to use for login.",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "password": {
+        "name": "password",
+        "description": "Password ",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "password_repeat": {
+        "name": "password_repeat",
+        "description": "password_repeat",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "userphone": {
+        "name": "userphone",
+        "description": "phone number",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "useremail":{
+        "name": "useremail",
+        "description": "email",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      }, 
+      "userstore":{
+        "name": "userstore",
+        "description": "user's store",
+        "in": "formData",
+        "required": false,
+        "type": "string"
+      }, 
+      "user-id": {
+        "name": "user-id",
+        "description": "user id ",
+        "in": "header",
+        "required": true,
+        "type": "string"
+      },
+      "token": {
+        "name": "authorization",
+        "description": "Bearer <space> token",
+        "in": "header",
+        "required": true,
+        "type": "string"
+      },
+      "login_email": {
+        "name": "login_email",
+        "description": "login_email",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "login_password": {
+        "name": "login_password",
+        "description": "login_password",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "user_email": {
+        "name": "user_email",
+        "description": "user_email",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "user_phone": {
+        "name": "user_phone",
+        "description": "user_phone",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "gender": {
+        "name": "gender",
+        "description": "laki-laki / perempuan",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "date_of_birth": {
+        "name": "gedate_of_birthnder",
+        "description": "date - month - year (1-01-2020)",
+        "in": "formData",
+        "required": false,
+        "type": "string"
+      },
+      "images": {
+        "name": "images",
+        "description": "an image file",
+        "in": "formData",
+        "required": false,
+        "type": "file"
+      },
+      "newpassword": {
+        "name": "newpassword",
+        "description": "newpassword",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "newpassword_repeat": {
+        "name": "newpassword_repeat",
+        "description": "newpassword_repeat",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "email": {
+        "name": "email",
+        "description": "email",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "address": {
+        "name": "address",
+        "description": "address",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "primary_address": {
+        "name": "primary_address",
+        "description": "primary_address - boolean",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "product_name": {
+        "name": "product_name",
+        "description": "product_name",
+        "in": "query",
+        "required": false,
+        "type": "string"
+      },
+      "product_category": {
+        "name": "product_category",
+        "description": "product_category ",
+        "in": "query",
+        "required": false,
+        "type": "string"
+      },
+      "seller": {
+        "name": "seller",
+        "description": "seller -",
+        "in": "query",
+        "required": false,
+        "type": "string"
+      },
+      "product_condition": {
+        "name": "product_condition",
+        "description": "product_condition -",
+        "in": "query",
+        "required": false,
+        "type": "string"
+      },
+      "order_by": {
+        "name": "order_by",
+        "description": "order_by -",
+        "in": "query",
+        "required": false,
+        "type": "string"
+      },
+      "sort": {
+        "name": "sort",
+        "description": "sort -",
+        "in": "query",
+        "required": false,
+        "type": "string"
+      },
+      "limit": {
+        "name": "limit",
+        "description": "limit -",
+        "in": "query",
+        "required": false,
+        "type": "integer"
+      },
+      "page": {
+        "name": "page",
+        "description": "page -",
+        "in": "query",
+        "required": false,
+        "type": "integer"
+      },
+      "product_name2": {
+        "name": "product_name",
+        "description": "product_name",
+        "in": "formData",
+        "required": false,
+        "type": "string"
+      },
+      "product_category2": {
+        "name": "product_category",
+        "description": "product_category ",
+        "in": "formData",
+        "required": false,
+        "type": "string"
+      },
+      "seller2": {
+        "name": "seller",
+        "description": "seller -",
+        "in": "formData",
+        "required": false,
+        "type": "string"
+      }, 
+      "product_condition2": {
+        "name": "product_condition",
+        "description": "product_condition -",
+        "in": "formData",
+        "required": false,
+        "type": "string"
+      },
+      "product_description": {
+        "name": "product_description",
+        "description": "product_description -",
+        "in": "formData",
+        "required": false,
+        "type": "string"
+      },
+      "product_price": {
+        "name": "product_price",
+        "description": "product_price -",
+        "in": "formData",
+        "required": false,
+        "type": "integer"
+      }, 
+      "disc": {
+        "name": "disc",
+        "description": "disc -",
+        "in": "formData",
+        "required": false,
+        "type": "integer"
+      }, 
+      "product_stock": {
+        "name": "product_stock",
+        "description": "product_stock -",
+        "in": "formData",
+        "required": false,
+        "type": "integer"
+      }, 
+      "product_rating": {
+        "name": "product_rating",
+        "description": "product_rating -",
+        "in": "formData",
+        "required": false,
+        "type": "string"
+      }, 
+      "product_size": {
+        "name": "product_size",
+        "description": "product_size -",
+        "in": "formData",
+        "required": false,
+        "type": "string"
+      }, 
+      "product_color": {
+        "name": "product_color",
+        "description": "product_color -",
+        "in": "formData",
+        "required": false,
+        "type": "string"
+      },
+      "category_name": {
+        "name": "category_name",
+        "description": "category_name -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "slide_name": {
+        "name": "slide_name",
+        "description": "slide_name -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "url": {
+        "name": "url",
+        "description": "url -",
+        "in": "formData",
+        "required": false,
+        "type": "string"
+      },
+      "product_id": {
+        "name": "product_id",
+        "description": "product_id -",
+        "in": "formData",
+        "required": true,
+        "type": "integer"
+      },
+      "cart_product_condition": {
+        "name": "cart_product_condition",
+        "description": "cart_product_conditionrl -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "cart_product_size": {
+        "name": "cart_product_size",
+        "description": "cart_product_size -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "cart_product_color": {
+        "name": "cart_product_color",
+        "description": "cart_product_color -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "cart_qty": {
+        "name": "cart_qty",
+        "description": "cart_qty -",
+        "in": "formData",
+        "required": true,
+        "type": "integer"
+      },
+      "order_date": {
+        "name": "order_date",
+        "description": "order_date -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "expire_date": {
+        "name": "expire_date",
+        "description": "expire_date -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "shiping_price": {
+        "name": "shiping_price",
+        "description": "shiping_price -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "total_price": {
+        "name": "total_price",
+        "description": "total_price -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "discount": {
+        "name": "discount",
+        "description": "discount -",
+        "in": "formData",
+        "required": true,
+        "type": "integer"
+      },
+      "payment_type": {
+        "name": "payment_type",
+        "description": "payment_type -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "payment_total": {
+        "name": "payment_total",
+        "description": "payment_total -",
+        "in": "formData",
+        "required": true,
+        "type": "integer"
+      },
+      "shiping_courir": {
+        "name": "shiping_courir",
+        "description": "shiping_courir -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "shiping_city": {
+        "name": "shiping_city",
+        "description": "shiping_city -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "shiping_address": {
+        "name": "shiping_address",
+        "description": "shiping_address -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "sts_order": {
+        "name": "sts_order",
+        "description": "sts_order -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "sts_payment": {
+        "name": "sts_payment",
+        "description": "sts_payment -",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "sts_items": {
+        "name": "sts_items",
+        "description": "sts_items - order",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "qty": {
+        "name": "qty",
+        "description": "qty -",
+        "in": "formData",
+        "required": true,
+        "type": "integer"
+      }
+    },
+    "securityDefinitions": {},
+    "tags": [
+      {
+        "name": "Users",
+        "description": "Get user's data, registration, search user by name and login"
+      },
+      {
+        "name": "Products",
+        "description": "Products CRUD"
+      },
+      {
+        "name": "Order",
+        "description": "Order Product"
+      },
+      {
+        "name": "Category",
+        "description": "Category Product"
+      },
+      {
+        "name": "Slide",
+        "description": "Slide"
+      }
+    ]
+  }

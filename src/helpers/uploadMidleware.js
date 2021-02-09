@@ -7,19 +7,19 @@ const MultipleImages = (req, res, next) => {
   const userId = req.userData.user_id
   const userName = req.userData.user_name.toLowerCase().replace(regExp, '')
   const originalUrl = req.originalUrl.split('/')
-  const object = originalUrl[2] === 'user' ? {
+  const object = originalUrl[3] === 'user' ? {
     // jika upload users
     directory: 'src/assets/images/users',
     prefix: `${userId}-${userName}`,
     fileUrl: process.env.APP_URL_PROFILE,
     currentImages: req.body.myprofile[0].user_image
-  } : originalUrl[2] === 'category' ? {
+  } : originalUrl[3] === 'category' ? {
     // jika upload category
     directory: 'src/assets/images/category',
     prefix: 'ctgry',
     fileUrl: process.env.APP_URL_CATEGORY,
     currentImages: ''
-  } : originalUrl[2] === 'slide' ? {
+  } : originalUrl[3] === 'slide' ? {
     // jika upload product `${prdId}-${file.originalname}`
     directory: 'src/assets/images/slide',
     prefix: 'slide-' + dateNow,
@@ -32,6 +32,8 @@ const MultipleImages = (req, res, next) => {
     fileUrl: process.env.APP_URL_PRODUCTS,
     currentImages: ''
   }
+
+  console.log(object)
 
   const multerStorage = multer.diskStorage({
     destination: function (req, file, cb) {

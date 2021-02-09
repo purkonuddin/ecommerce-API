@@ -285,7 +285,7 @@ const SignUp = (req, res, next) => {
                 <li>user_phone : ${user.user_phone}</li>
                 </ul></br>
                 Silahkan verifikasi email dengan mengklik link berikut:</br>
-                <a href=http://${req.headers.host}/verifikasi-email/${token}>Konfirmasi</a>`
+                <a href=http://${req.headers.host}/api/v1/user/verifikasi-email/${token}>Konfirmasi</a>`
 
                 req.body.user_email = userEmail
                 req.body.email_subject = emailSubject
