@@ -4,7 +4,7 @@ const db = require('../configs/db')
 
 const InsertOrderDetail = (data) => {
   return new Promise((resolve, reject) => {
-    db.query(`INSERT INTO tb_order_detail(
+    db.query(`INSERT INTO ecommerce.tb_order_detail(
         order_number, 
         member_id, 
         product_id, 
@@ -46,7 +46,7 @@ const InsertOrderDetail = (data) => {
 
 const InsertOrder = (data) => {
   return new Promise((resolve, reject) => {
-    db.query(`INSERT INTO tb_orders(
+    db.query(`INSERT INTO ecommerce.tb_orders(
         order_number, 
         order_date, 
         expire_date, 
@@ -92,7 +92,7 @@ const InsertOrder = (data) => {
 
 const CekIdOrder = (orderNumber) => {
   return new Promise((resolve, reject) => {
-    db.query(`SELECT * FROM tb_orders WHERE order_number = '${orderNumber}'`, (error, result) => {
+    db.query(`SELECT * FROM ecommerce.tb_orders WHERE order_number = '${orderNumber}'`, (error, result) => {
       if (!error) {
         resolve(result)
       } else {
@@ -103,7 +103,7 @@ const CekIdOrder = (orderNumber) => {
 }
 const UpdateOrder = (data, orderNumber) => {
   return new Promise((resolve, reject) => {
-    db.query(`UPDATE tb_orders SET total_price='${data.total_price}', payment_total='${data.payment_total}' WHERE order_number = '${orderNumber}'`, (error, result) => {
+    db.query(`UPDATE ecommerce.tb_orders SET total_price='${data.total_price}', payment_total='${data.payment_total}' WHERE order_number = '${orderNumber}'`, (error, result) => {
       if (!error) {
         resolve(result)
       } else {

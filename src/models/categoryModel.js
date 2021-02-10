@@ -3,7 +3,7 @@ const db = require('../configs/db')
 
 const Insert = (data, userId) => {
   return new Promise(function (resolve, reject) {
-    db.query(`INSERT INTO tb_categories(
+    db.query(`INSERT INTO ecommerce.tb_categories(
           category_id,
           category_name,
           category_image,
@@ -25,7 +25,7 @@ const Insert = (data, userId) => {
 
 const Delete = (categoryId) => {
   return new Promise(function (resolve, reject) {
-    db.query(`DELETE FROM tb_categories WHERE category_id = '${categoryId}'`, function (error, result) {
+    db.query(`DELETE FROM ecommerce.tb_categories WHERE category_id = '${categoryId}'`, function (error, result) {
       if (!error) {
         resolve(result)
       } else {
@@ -37,7 +37,7 @@ const Delete = (categoryId) => {
 
 const GetById = (categoryId) => {
   return new Promise(function (resolve, reject) {
-    db.query(`SELECT * FROM tb_categories WHERE category_id = '${categoryId}'`, function (error, result) {
+    db.query(`SELECT * FROM ecommerce.tb_categories WHERE category_id = '${categoryId}'`, function (error, result) {
       if (!error) {
         resolve(result)
       } else {
@@ -49,7 +49,7 @@ const GetById = (categoryId) => {
 
 const GetAll = () => {
   return new Promise(function (resolve, reject) {
-    db.query('SELECT * FROM tb_categories', function (error, result) {
+    db.query('SELECT * FROM ecommerce.tb_categories', function (error, result) {
       if (!error) {
         resolve(result)
       } else {

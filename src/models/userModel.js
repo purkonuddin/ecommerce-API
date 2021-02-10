@@ -4,7 +4,7 @@ const uuid = require('uuid')
 
 const updatepassword = (password, userid) => {
   return new Promise((resolve, reject) => {
-    db.query(`UPDATE tb_user SET user_password = '${password}' WHERE user_id= '${userid}'`, (error, result) => {
+    db.query(`UPDATE ecommerce.tb_user SET user_password = '${password}' WHERE user_id= '${userid}'`, (error, result) => {
       if (!error) {
         resolve(result)
       } else {
@@ -16,7 +16,7 @@ const updatepassword = (password, userid) => {
 
 const setlastlogin = (userid) => {
   return new Promise((resolve, reject) => {
-    db.query(`UPDATE tb_user SET last_login = now() WHERE user_id= '${userid}'`, (error, result) => {
+    db.query(`UPDATE ecommerce.tb_user SET last_login = now() WHERE user_id= '${userid}'`, (error, result) => {
       if (!error) {
         resolve(result)
       } else {
@@ -28,7 +28,7 @@ const setlastlogin = (userid) => {
 
 const login = (email) => {
   return new Promise((resolve, reject) => {
-    db.query(`SELECT * FROM tb_user WHERE user_email = '${email}'`, (error, result) => {
+    db.query(`SELECT * FROM ecommerce.tb_user WHERE user_email = '${email}'`, (error, result) => {
       if (!error) {
         resolve(result)
       } else {
@@ -40,7 +40,7 @@ const login = (email) => {
 
 const setemailverifytoken = (token, userid) => {
   return new Promise((resolve, reject) => {
-    db.query(`UPDATE tb_user SET email_verify_token = '${token}' WHERE user_id='${userid}'`, (error, result) => {
+    db.query(`UPDATE ecommerce.tb_user SET email_verify_token = '${token}' WHERE user_id='${userid}'`, (error, result) => {
       if (!error) {
         resolve(result)
       } else {
@@ -52,7 +52,7 @@ const setemailverifytoken = (token, userid) => {
 
 const updatemailverifiedstatus = (token) => {
   return new Promise(function (resolve, reject) {
-    db.query(`UPDATE tb_user SET email_verified ='1' WHERE email_verify_token='${token}'`, function (error, result) {
+    db.query(`UPDATE ecommerce.tb_user SET email_verified ='1' WHERE email_verify_token='${token}'`, function (error, result) {
       if (!error) {
         resolve(result)
       } else {
@@ -64,7 +64,7 @@ const updatemailverifiedstatus = (token) => {
 
 const getusername = (username) => {
   return new Promise(function (resolve, reject) {
-    db.query(`SELECT * FROM tb_user WHERE LOWER(user_name) = LOWER(${db.escape(username)})`, function (error, result) {
+    db.query(`SELECT * FROM ecommerce.tb_user WHERE LOWER(user_name) = LOWER(${db.escape(username)})`, function (error, result) {
       if (!error) {
         resolve(result)
       } else {
@@ -77,7 +77,7 @@ const getusername = (username) => {
 const insertnewuser = (data) => {
   return new Promise(function (resolve, reject) {
     db.query(
-        `INSERT INTO tb_user (
+        `INSERT INTO ecommerce.tb_user (
             user_id, 
             user_name, 
             user_email, 
@@ -113,7 +113,7 @@ const insertnewuser = (data) => {
 
 const UpdateProfile = (data, userId) => {
   return new Promise(function (resolve, reject) {
-    db.query('UPDATE tb_user SET ? WHERE user_id = ?', [data, userId], function (error, result) {
+    db.query('UPDATE ecommerce.tb_user SET ? WHERE user_id = ?', [data, userId], function (error, result) {
       if (!error) {
         resolve(result)
       } else {
@@ -125,8 +125,8 @@ const UpdateProfile = (data, userId) => {
 
 const GetMyProfile = (userId, action) => {
   const originalUrl = action
-  const strQueryA = `SELECT user_name, user_email, user_phone, gender,date_of_birth ,a.address AS primary_address, user_store, user_image, account_type FROM tb_user u, tb_customer_address a WHERE u.user_id = '${userId}' AND a.customer_id = '${userId}' AND a.primary_address = 'true'`
-  const strQueryB = `SELECT user_name, user_email, user_phone, gender,date_of_birth , primary_address, user_store, user_image, account_type FROM tb_user WHERE user_id = '${userId}'`
+  const strQueryA = `SELECT user_name, user_email, user_phone, gender,date_of_birth ,a.address AS primary_address, user_store, user_image, account_type FROM ecommerce.tb_user u, ecommerce.tb_customer_address a WHERE u.user_id = '${userId}' AND a.customer_id = '${userId}' AND a.primary_address = 'true'`
+  const strQueryB = `SELECT user_name, user_email, user_phone, gender,date_of_birth , primary_address, user_store, user_image, account_type FROM ecommerce.tb_user WHERE user_id = '${userId}'`
   // (localhost:8001/api/user) => req.originalUrl.split('/')[3] = [undefined]
   console.log(strQueryA)
   const strQuery = originalUrl === undefined ? strQueryB : strQueryB
@@ -145,7 +145,7 @@ const GetMyProfile = (userId, action) => {
 
 const GetFieldAlreadyInUse = (username, email, phone) => {
   return new Promise(function (resolve, reject) {
-    db.query(`SELECT * FROM tb_user WHERE LOWER(user_name) = LOWER(${db.escape(username)}) OR user_email = '${email}' OR user_phone = '${phone}'`, function (error, result) {
+    db.query(`SELECT * FROM ecommerce.tb_user WHERE LOWER(user_name) = LOWER(${db.escape(username)}) OR user_email = '${email}' OR user_phone = '${phone}'`, function (error, result) {
       if (!error) {
         resolve(result)
       } else {

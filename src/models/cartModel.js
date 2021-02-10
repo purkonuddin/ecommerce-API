@@ -4,7 +4,7 @@ const db = require('../configs/db')
 
 const Insert = (data) => {
   return new Promise((resolve, reject) => {
-    db.query(`INSERT INTO tb_cart ( 
+    db.query(`INSERT INTO ecommerce.tb_cart ( 
             member_id, 
             product_id, 
             product_name,
@@ -45,7 +45,7 @@ const Insert = (data) => {
 }
 const updateStsItems = (data) => {
   return new Promise(function (resolve, reject) {
-    db.query(`UPDATE tb_cart SET sts_items = '${data.sts_items}' WHERE member_id = '${data.member_id}' AND product_id = '${data.product_id}'`, function (error, result) {
+    db.query(`UPDATE ecommerce.tb_cart SET sts_items = '${data.sts_items}' WHERE member_id = '${data.member_id}' AND product_id = '${data.product_id}'`, function (error, result) {
       if (!error) {
         resolve(result)
       } else {
@@ -57,7 +57,7 @@ const updateStsItems = (data) => {
 
 const GetItemWithStsOrder = (data) => {
   return new Promise(function (resolve, reject) {
-    db.query(`SELECT * FROM tb_cart WHERE member_id ='${data.member_id}' AND sts_items = '${data.sts_items}'`, function (error, result) {
+    db.query(`SELECT * FROM ecommerce.tb_cart WHERE member_id ='${data.member_id}' AND sts_items = '${data.sts_items}'`, function (error, result) {
       if (!error) {
         resolve(result)
       } else {
@@ -69,7 +69,7 @@ const GetItemWithStsOrder = (data) => {
 
 const DeleteCartWithStsOrder = (data) => {
   return new Promise(function (resolve, reject) {
-    db.query(`DELETE FROM tb_cart WHERE product_id = '${data.product_id}' AND member_id ='${data.member_id}' AND sts_items = '${data.sts_items}'`, function (error, result) {
+    db.query(`DELETE FROM ecommerce.tb_cart WHERE product_id = '${data.product_id}' AND member_id ='${data.member_id}' AND sts_items = '${data.sts_items}'`, function (error, result) {
       if (!error) {
         resolve(result)
       } else {

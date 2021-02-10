@@ -2,7 +2,7 @@ const db = require('../configs/db')
 
 const Insert = (data) => {
   return new Promise(function (resolve, reject) {
-    db.query(`INSERT INTO tb_slide(
+    db.query(`INSERT INTO ecommerce.tb_slide(
         slide_id,
         slide_name,
         slide_image,

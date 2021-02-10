@@ -11,7 +11,7 @@ module.exports = {
   // SELECT * FROM tb_products WHERE product_category='t-shirt' AND seller = 'Toko Shofa' AND product_condition='baru' ORDER BY product_price ASC
   reduceStock: (qty, productId) => {
     return new Promise((resolve, reject) => {
-      db.query(`UPDATE tb_products SET product_stock = (product_stock - ${qty}) WHERE product_id ='${productId}'`, (err, result) => {
+      db.query(`UPDATE ecommerce.tb_products SET product_stock = (product_stock - ${qty}) WHERE product_id ='${productId}'`, (err, result) => {
         if (!err) {
           resolve(result)
         } else {
@@ -33,7 +33,7 @@ module.exports = {
   },
   searchProduct: (name) => {
     return new Promise((resolve, reject) => {
-      db.query('SELECT * FROM tb_products WHERE product_name LIKE ?', '%' + name + '%', (err, result) => {
+      db.query('SELECT * FROM ecommerce.tb_products WHERE product_name LIKE ?', '%' + name + '%', (err, result) => {
         if (!err) {
           resolve(result)
         } else {
@@ -55,7 +55,7 @@ module.exports = {
   },
   pagingProduct: (page, perpage) => {
     return new Promise((resolve, reject) => {
-      db.query(`SELECT * FROM tb_products LIMIT ${page + ', ' + perpage}`, (err, result) => {
+      db.query(`SELECT * FROM ecommerce.tb_products LIMIT ${page + ', ' + perpage}`, (err, result) => {
         if (!err) {
           resolve(result)
         } else {
@@ -66,7 +66,7 @@ module.exports = {
   },
   getall: () => {
     return new Promise(function (resolve, reject) {
-      db.query('SELECT * FROM tb_products', function (error, result) {
+      db.query('SELECT * FROM ecommerce.tb_products', function (error, result) {
         if (!error) {
           resolve(result)
         } else {
@@ -77,7 +77,7 @@ module.exports = {
   },
   getbyid: (productid) => {
     return new Promise(function (resolve, reject) {
-      db.query(`SELECT * FROM tb_products WHERE LOWER(product_id) = LOWER(${db.escape(productid)})`, function (error, result) {
+      db.query(`SELECT * FROM ecommerce.tb_products WHERE LOWER(product_id) = LOWER(${db.escape(productid)})`, function (error, result) {
         if (!error) {
           resolve(result)
         } else {
@@ -89,7 +89,7 @@ module.exports = {
   delete: (productId, userStore) => {
     return new Promise(function (resolve, reject) {
       // DELETE FROM `tb_products` WHERE `seller`='toko ABC' AND `product_id`='1600897055714'
-      db.query(`DELETE FROM tb_products WHERE product_id = '${productId}' AND seller = '${userStore}'`, function (error, result) {
+      db.query(`DELETE FROM ecommerce.tb_products WHERE product_id = '${productId}' AND seller = '${userStore}'`, function (error, result) {
         if (!error) {
           resolve(result)
         } else {
@@ -100,7 +100,7 @@ module.exports = {
   },
   update: (data, productid, seller) => {
     return new Promise((resolve, reject) => {
-      db.query(`UPDATE tb_products SET ?,updated_at = now() WHERE product_id=? AND seller='${seller}'`, [data, productid], (err, result) => {
+      db.query(`UPDATE ecommerce.tb_products SET ?,updated_at = now() WHERE product_id=? AND seller='${seller}'`, [data, productid], (err, result) => {
         if (!err) {
           resolve(result)
         } else {
@@ -112,7 +112,7 @@ module.exports = {
   insert: (data) => {
     return new Promise(function (resolve, reject) {
       db.query(
-              `INSERT INTO tb_products ( 
+              `INSERT INTO ecommerce.tb_products ( 
                 product_id, 
                 product_name, 
                 product_description, 

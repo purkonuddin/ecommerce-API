@@ -27,46 +27,31 @@ SET time_zone = "+00:00";
 -- Struktur dari tabel `tb_cart`
 --
 
-CREATE TABLE `tb_cart` (
-  `id` int(11) NOT NULL,
-  `member_id` varchar(255) NOT NULL,
-  `product_id` varchar(255) NOT NULL,
-  `product_name` varchar(255) NOT NULL,
-  `category` varchar(255) NOT NULL,
-  `seller` varchar(255) NOT NULL,
-  `product_condition` varchar(255) NOT NULL,
-  `product_size` varchar(255) NOT NULL,
-  `product_color` varchar(255) NOT NULL,
-  `qty` int(11) NOT NULL,
-  `price` int(11) NOT NULL,
-  `disc` float NOT NULL,
-  `price_aft_disc` float NOT NULL,
-  `subtotal` float NOT NULL,
-  `sts_items` enum('pending','order') NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+ 
 -- --------------------------------------------------------
 
 --
 -- Struktur dari tabel `tb_categories`
 --
 
-CREATE TABLE `tb_categories` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `ecommerce`.`tb_categories` (
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   `category_id` varchar(255) DEFAULT NULL,
   `category_name` varchar(60) DEFAULT NULL,
   `category_image` varchar(255) NOT NULL,
-  `created_at` date NOT NULL DEFAULT current_timestamp(),
-  `updated_at` date NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NULL,
+  UNIQUE KEY `idx_category_id` (`category_id`),
+  UNIQUE KEY `idx_category_name` (`category_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
 
 --
 -- Dumping data untuk tabel `tb_categories`
 --
 
 INSERT INTO `tb_categories` (`id`, `category_id`, `category_name`, `category_image`, `created_at`, `updated_at`) VALUES
-(6, 'd6a802d7-5ca5-4538-a479-0e37092f5b9c', 't-shirt', ' http://localhost:8080/imgs-category/ctgry-icin-4-200x200.png', '2020-09-27', '2020-09-27'),
-(9, '148d657d-e648-4bd9-a710-cbe072e6f2c9', 'shirt', ' http://localhost:8080/imgs-category/ctgry-icin-3-200x200.png', '2020-09-27', '2020-09-27');
+(1, 'd6a802d7-5ca5-4538-a479-0e37092f5b9c', 't-shirt', ' http://localhost:8080/imgs-category/ctgry-icin-4-200x200.png', '2020-09-27', '2020-09-27'),
+(2, '148d657d-e648-4bd9-a710-cbe072e6f2c9', 'shirt', ' http://localhost:8080/imgs-category/ctgry-icin-3-200x200.png', '2020-09-27', '2020-09-27');
 
 -- --------------------------------------------------------
 
@@ -74,8 +59,8 @@ INSERT INTO `tb_categories` (`id`, `category_id`, `category_name`, `category_ima
 -- Struktur dari tabel `tb_customer_address`
 --
 
-CREATE TABLE `tb_customer_address` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `ecommerce`.`tb_customer_address` (
+  `id` int NOT NULL,
   `customer_id` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
   `primary_address` enum('true','false') NOT NULL DEFAULT 'false'
@@ -97,15 +82,15 @@ INSERT INTO `tb_customer_address` (`id`, `customer_id`, `address`, `primary_addr
 -- Struktur dari tabel `tb_orders`
 --
 
-CREATE TABLE `tb_orders` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `ecommerce`.`tb_orders` (
+  `id` int NOT NULL,
   `order_number` varchar(255) DEFAULT NULL,
   `order_date` datetime DEFAULT NULL,
   `expire_date` datetime DEFAULT NULL,
   `customer_id` varchar(255) DEFAULT NULL,
   `customer_name` varchar(255) DEFAULT NULL,
-  `total_price` int(11) DEFAULT NULL,
-  `shiping_price` int(11) DEFAULT NULL,
+  `total_price` int DEFAULT NULL,
+  `shiping_price` int DEFAULT NULL,
   `discount` float DEFAULT NULL,
   `ppn` varchar(15) NOT NULL,
   `payment_total` float DEFAULT NULL,
@@ -130,8 +115,8 @@ INSERT INTO `tb_orders` (`id`, `order_number`, `order_date`, `expire_date`, `cus
 -- Struktur dari tabel `tb_order_detail`
 --
 
-CREATE TABLE `tb_order_detail` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `ecommerce`.`tb_order_detail` (
+  `id` int NOT NULL,
   `order_number` varchar(255) NOT NULL,
   `member_id` varchar(255) NOT NULL,
   `product_id` varchar(255) NOT NULL,
@@ -141,7 +126,7 @@ CREATE TABLE `tb_order_detail` (
   `product_condition` varchar(255) NOT NULL,
   `product_size` varchar(255) NOT NULL,
   `product_color` varchar(255) NOT NULL,
-  `qty` int(11) NOT NULL,
+  `qty` int NOT NULL,
   `price` float NOT NULL,
   `disc` float NOT NULL,
   `price_aft_disc` float NOT NULL,
@@ -162,24 +147,24 @@ INSERT INTO `tb_order_detail` (`id`, `order_number`, `member_id`, `product_id`, 
 -- Struktur dari tabel `tb_products`
 --
 
-CREATE TABLE `tb_products` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `ecommerce`.`tb_products` (
+  `id` int NOT NULL,
   `product_id` varchar(255) DEFAULT NULL,
   `product_name` varchar(255) DEFAULT NULL,
   `product_description` text DEFAULT NULL,
   `product_image` text DEFAULT NULL,
   `product_category` varchar(255) DEFAULT NULL,
-  `product_price` int(11) DEFAULT NULL,
+  `product_price` int DEFAULT NULL,
   `disc` float DEFAULT 0,
   `price_aft_disc` float DEFAULT 0,
-  `product_stock` int(11) DEFAULT NULL,
+  `product_stock` int DEFAULT NULL,
   `seller` varchar(255) DEFAULT NULL,
-  `product_rating` int(11) DEFAULT NULL,
+  `product_rating` int DEFAULT NULL,
   `product_condition` varchar(255) DEFAULT NULL,
   `product_size` varchar(255) DEFAULT NULL,
   `product_color` varchar(255) DEFAULT NULL,
-  `added_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp()
+  `added_at` datetime NOT NULL,
+  `updated_at` datetime
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -197,8 +182,8 @@ INSERT INTO `tb_products` (`id`, `product_id`, `product_name`, `product_descript
 -- Struktur dari tabel `tb_slide`
 --
 
-CREATE TABLE `tb_slide` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `ecommerce`.`tb_slide` (
+  `id` int NOT NULL,
   `slide_id` varchar(255) NOT NULL,
   `slide_name` varchar(255) NOT NULL,
   `slide_image` varchar(255) NOT NULL,
@@ -219,19 +204,19 @@ INSERT INTO `tb_slide` (`id`, `slide_id`, `slide_name`, `slide_image`, `url`, `a
 -- Struktur dari tabel `tb_user`
 --
 
-CREATE TABLE `tb_user` (
-  `id` int(11) NOT NULL,
+CREATE TABLE `ecommerce`.`tb_user` (
+  `id` int NOT NULL,
   `user_id` varchar(255) DEFAULT NULL,
   `user_name` varchar(255) DEFAULT NULL,
   `user_email` varchar(255) DEFAULT NULL,
   `user_phone` varchar(255) DEFAULT NULL,
   `gender` enum('laki-laki','perempuan') NOT NULL,
-  `date_of_birth` date NOT NULL DEFAULT current_timestamp(),
+  `date_of_birth` date DEFAULT NULL,
   `primary_address` varchar(255) DEFAULT NULL,
   `second_address` varchar(255) DEFAULT NULL,
   `user_store` varchar(255) DEFAULT NULL,
   `user_password` varchar(255) DEFAULT NULL,
-  `registered_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `registered_at` datetime DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
   `user_image` varchar(255) DEFAULT NULL,
   `email_verify_token` varchar(255) DEFAULT NULL,
@@ -254,50 +239,50 @@ INSERT INTO `tb_user` (`id`, `user_id`, `user_name`, `user_email`, `user_phone`,
 --
 -- Indeks untuk tabel `tb_cart`
 --
-ALTER TABLE `tb_cart`
+ALTER TABLE `ecommerce`.`tb_cart`
   ADD PRIMARY KEY (`id`);
 
 --
 -- Indeks untuk tabel `tb_categories`
 --
-ALTER TABLE `tb_categories`
+ALTER TABLE `ecommerce`.`tb_categories`
   ADD PRIMARY KEY (`id`);
 
 --
 -- Indeks untuk tabel `tb_customer_address`
 --
-ALTER TABLE `tb_customer_address`
+ALTER TABLE `ecommerce`.`tb_customer_address`
   ADD PRIMARY KEY (`id`);
 
 --
 -- Indeks untuk tabel `tb_orders`
 --
-ALTER TABLE `tb_orders`
+ALTER TABLE `ecommerce`.`tb_orders`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `order_number` (`order_number`);
 
 --
 -- Indeks untuk tabel `tb_order_detail`
 --
-ALTER TABLE `tb_order_detail`
+ALTER TABLE `ecommerce`.`tb_order_detail`
   ADD PRIMARY KEY (`id`);
 
 --
 -- Indeks untuk tabel `tb_products`
 --
-ALTER TABLE `tb_products`
+ALTER TABLE `ecommerce`.`tb_products`
   ADD PRIMARY KEY (`id`);
 
 --
 -- Indeks untuk tabel `tb_slide`
 --
-ALTER TABLE `tb_slide`
+ALTER TABLE `ecommerce`.`tb_slide`
   ADD PRIMARY KEY (`id`);
 
 --
 -- Indeks untuk tabel `tb_user`
 --
-ALTER TABLE `tb_user`
+ALTER TABLE `ecommerce`.`tb_user`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `user_idx` (`user_id`);
 
@@ -308,52 +293,69 @@ ALTER TABLE `tb_user`
 --
 -- AUTO_INCREMENT untuk tabel `tb_cart`
 --
-ALTER TABLE `tb_cart`
+ALTER TABLE `ecommerce`.`tb_cart`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_categories`
 --
-ALTER TABLE `tb_categories`
+ALTER TABLE `ecommerce`.`tb_categories`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_customer_address`
 --
-ALTER TABLE `tb_customer_address`
+ALTER TABLE `ecommerce`.`tb_customer_address`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_orders`
 --
-ALTER TABLE `tb_orders`
+ALTER TABLE `ecommerce`.`tb_orders`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_order_detail`
 --
-ALTER TABLE `tb_order_detail`
+ALTER TABLE `ecommerce`.`tb_order_detail`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_products`
 --
-ALTER TABLE `tb_products`
+ALTER TABLE `ecommerce`.`tb_products`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_slide`
 --
-ALTER TABLE `tb_slide`
+ALTER TABLE `ecommerce`.`tb_slide`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT untuk tabel `tb_user`
 --
-ALTER TABLE `tb_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
-COMMIT;
+ALTER TABLE `ecommerce`.`tb_user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29; 
+  
+--
+-- UNIQUE KEY 
+--
+ALTER TABLE `ecommerce`.`tb_user`
+ ADD CONSTRAINT idx_user_id UNIQUE KEY(user_id);
+ 
+ALTER TABLE `ecommerce`.`tb_user`
+ ADD CONSTRAINT idx_user_store UNIQUE KEY(user_store);
 
+ALTER TABLE `ecommerce`.`tb_products`
+ ADD CONSTRAINT idx_product_id UNIQUE KEY(product_id);
+ 
+ALTER TABLE `ecommerce`.`tb_slide`
+ ADD CONSTRAINT idx_slide_id UNIQUE KEY(slide_id);
+
+ALTER TABLE `ecommerce`.`tb_order_detail`
+ ADD CONSTRAINT idx_order_detail_id UNIQUE KEY(order_detail_id);
+COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
