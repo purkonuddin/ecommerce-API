@@ -147,17 +147,41 @@ exp:.
 <p>Get all products - paging - search - sort using query params  <code>[get] http://3.92.225.2:8001/api/v1/products?product_condition=baru&order_by=product_price&sort=ASC&limit=10&page=1</code></p><br/>
 
 <h3>Order</h3><hr/>
-<p>Add a product to carts <code>[post] http://3.92.225.2:8001/api/v1/order/addToCart</code></p>
-<p>Update carts (status_item) value from pending to order <code>[patch] http://localhost:8001/api/v1/order/changeStsItemAtChart</code></p><hr/>
+<p>Add a product to carts <code>[post] http://3.92.225.2:8001/api/v1/order/addToCart</code></p><br/>
+<p>Update carts (status_item) value from pending to order <code>[patch] http://localhost:8001/api/v1/order/changeStsItemAtChart</code></p><br/>
 <p>Create order  <code>[post] http://3.92.225.2:8001/api/v1/order/create-order</code></p><br/>
 
 <h3>Category</h3><hr/>
-<p>Add category  <code>[post] http://3.92.225.2:8001/api/v1/category</code></p>
-<p>Get all categories  <code>[get] http://3.92.225.2:8001/api/v1/category</code></p>
-<p>Delete a category  <code>[delete] http://3.92.225.2:8001/api/v1/category/:idcategory</code></p>
+<p>Create category  <code>[post] http://3.92.225.2:8001/api/v1/category</code></p><br/>
+<pre>
+  Authorization's type Bearer Token
+  
+  body in form-data:
+  {
+    [type string required] "category_name": "t-shirt",
+    [type file]   "images":"category_one.png"
+  }  
+</pre>
+<br/>
+
+<p>Read categories  <code>[get] http://3.92.225.2:8001/api/v1/category</code></p> 
+<br/>
+
+<p>Delete category  <code>[delete] http://3.92.225.2:8001/api/v1/category/:category_id</code></p>
+<pre>
+  parameters:
+  {
+    Authorization's type Bearer Token
+  },
+  {
+    Path variabel `category_id` type string required
+  }
+
+</pre>
+<br/>
 
 <h3>Slide</h3><hr/>
-<p>Add a slide <code>[post] http://3.92.225.2:8001/api/v1/slide</code></p>
+<p>Add a slide <code>[post] http://3.92.225.2:8001/api/v1/slide</code></p><br/>
 <pre>
   Authorization's type Bearer Token
   

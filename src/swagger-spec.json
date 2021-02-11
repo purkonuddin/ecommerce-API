@@ -550,7 +550,7 @@
         }
       },
       "/category/{category_id}":{
-        "patch":{
+        "delete":{
           "description": "Category",
           "tags": ["Category"],
           "produces": ["application/json"],
