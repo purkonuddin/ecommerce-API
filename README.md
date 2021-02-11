@@ -50,8 +50,8 @@ DATABASE=ecommerce
 
 
 ## End Point
-<h3>user</h3><hr/>
-<p>login <code>[post] http://localhost:8001/api/v1/login</code></p>
+<h3>User</h3><hr/>
+<p>Login <code>[post] http://localhost:8001/api/v1/login</code></p>
 <pre>
 exp:.
 {
@@ -60,47 +60,47 @@ exp:.
 }
 </pre>
 <br/>
-<p>sign-up <code>[post] sign-up post http://3.92.225.2:8001/api/v1/user/sign-up</code></p>
+<p>Sign-up <code>[post] sign-up post http://3.92.225.2:8001/api/v1/user/sign-up</code></p>
 <pre>
-exp:.
-{
-    "account_type": "seller", 
-    "username" : "Mr Swagger",
-    "useremail": "purkonuddin25@gmail.com",
-    "password" : "pass123",
-    "password_repeat" : "pass123",
-    "userphone":"085779919114",
-    "userstore":"Toko Swagger"
-}
+  exp:.
+  {
+      "account_type": "seller", 
+      "username" : "Mr Swagger",
+      "useremail": "purkonuddin25@gmail.com",
+      "password" : "pass123",
+      "password_repeat" : "pass123",
+      "userphone":"085779919114",
+      "userstore":"Toko Swagger"
+  }
 
-note:. account_type's type enum('seller','customer','admin')
+  note:. account_type's type enum('seller','customer','admin')
       if success then check your email, and tap on verify email link
 
       verifi email:  <code>[get] http://3.92.225.2:8001/api/v1/user/verifikasi-email/:token</code>
 </pre>
 <br/> 
 
-<p>logout  <span>[get] http://3.92.225.2:8001/api/v1/user/logout</span></p>
+<p>Logout  <code>[get] http://3.92.225.2:8001/api/v1/user/logout</code></p>
 <br/>
 
-<p>reset password  <code>[post] http://3.92.225.2:8001/api/v1/user/update-password</code></p>
+<p>Reset password  <code>[post] http://3.92.225.2:8001/api/v1/user/update-password</code></p>
 <pre>
 
   Authorization's type Bearer Token
 
-{
-    "newpassword":"AmikBsi12119617",
-    "newpassword_repeat":"AmikBsi12119617"
-}
+  {
+      "newpassword":"AmikBsi12119617",
+      "newpassword_repeat":"AmikBsi12119617"
+  }
 </pre>
 <br/>
-<p>get my profile  <span>[get] http://3.92.225.2:8001/api/v1/user</span></p>
+<p>Get my profile  <code>[get] http://3.92.225.2:8001/api/v1/user</code></p>
 <pre>
   Authorization's type Bearer Token
 </pre>
 <br/>
 
-<p>edit my profile  <code>[patch] http://3.92.225.2:8001/api/v1/user/edit-profile</code></p>
+<p>Edit my profile  <code>[patch] http://3.92.225.2:8001/api/v1/user/edit-profile</code></p>
 <pre>
   Authorization's type Bearer Token
 
@@ -114,14 +114,14 @@ note:. account_type's type enum('seller','customer','admin')
   }
 </pre>
 <br/>
-<p>forget password <code>[post] http://3.92.225.2:8001/api/v1/user/forgot-password</code></p>
+<p>Forget password <code>[post] http://3.92.225.2:8001/api/v1/user/forgot-password</code></p>
 <pre>
   {
     "email":"purkonud12119617@gmail.com"
   }
 </pre>
 <br/>
-<p>add customer's address <span>[post] http://3.92.225.2:8001/api/v1/user/customer-address</span></p>
+<p>Add customer's address <code>[post] http://3.92.225.2:8001/api/v1/user/customer-address</code></p>
 <pre>
   Authorization's type Bearer Token
  
@@ -134,27 +134,37 @@ note:. account_type's type enum('seller','customer','admin')
 
 </pre>
 <br>
-<p>get customer's address  <span>[get] http://3.92.225.2:8001/api/v1/user/customer-address</span></p>
+<p>Get customer's address  <code>[get] http://3.92.225.2:8001/api/v1/user/customer-address</code></p>
 <pre>
   Authorization's type Bearer Token 
 </pre>
 <br>
-<h3>products</h3><hr/>
-<p>insert a product <span>[post] http://3.92.225.2:8001/api/v1/products</span></p><br/>
-<p>delete a product <span>[delete] http://3.92.225.2:8001/api/v1/products/:idproducts</span></p><br/>
-<p>get a product <span>[get] http://3.92.225.2:8001/api/v1/products/:idproducts</span></p><br/>
-<p>edit a product <span>[patch] http://3.92.225.2:8080/api/v1/products/:idproduct</span></p><br/>
-<p>get all products - paging - search - sort using query params  <span>[get] http://3.92.225.2:8001/api/v1/products?product_condition=baru&order_by=product_price&sort=ASC&limit=10&page=1</span></p><br/>
+<h3>Products</h3><hr/>
+<p>Insert a product <code>[post] http://3.92.225.2:8001/api/v1/products</code></p><br/>
+<p>Delete a product <code>[delete] http://3.92.225.2:8001/api/v1/products/:idproducts</code></p><br/>
+<p>Get a product <code>[get] http://3.92.225.2:8001/api/v1/products/:idproducts</code></p><br/>
+<p>Edit a product <code>[patch] http://3.92.225.2:8080/api/v1/products/:idproduct</code></p><br/>
+<p>Get all products - paging - search - sort using query params  <code>[get] http://3.92.225.2:8001/api/v1/products?product_condition=baru&order_by=product_price&sort=ASC&limit=10&page=1</code></p><br/>
 
-<h3>order</h3><hr/>
-<p>add a product to carts <span>[post] http://3.92.225.2:8001/api/v1/order/addToCart</span></p>
-<p>update carts (status_item) value from pending to order <span>[patch] http://localhost:8001/api/v1/order/changeStsItemAtChart</span></p><hr/>
-<p>create order  <span>[post] http://3.92.225.2:8001/api/v1/order/create-order</span></p><br/>
+<h3>Order</h3><hr/>
+<p>Add a product to carts <code>[post] http://3.92.225.2:8001/api/v1/order/addToCart</code></p>
+<p>Update carts (status_item) value from pending to order <code>[patch] http://localhost:8001/api/v1/order/changeStsItemAtChart</code></p><hr/>
+<p>Create order  <code>[post] http://3.92.225.2:8001/api/v1/order/create-order</code></p><br/>
 
-<h3>category</h3><hr/>
-<p>add category  <span>[post] http://3.92.225.2:8001/api/v1/category</span></p>
-<p>get all categories  <span>[get] http://3.92.225.2:8001/api/v1/category</span></p>
-<p>delete a category  <span>[delete] http://3.92.225.2:8001/api/v1/category/:idcategory</span></p>
+<h3>Category</h3><hr/>
+<p>Add category  <code>[post] http://3.92.225.2:8001/api/v1/category</code></p>
+<p>Get all categories  <code>[get] http://3.92.225.2:8001/api/v1/category</code></p>
+<p>Delete a category  <code>[delete] http://3.92.225.2:8001/api/v1/category/:idcategory</code></p>
 
-<h3>slide</h3><hr/>
-<p>add a slide <span>[post] http://3.92.225.2:8001/api/v1/slide</span></p>
+<h3>Slide</h3><hr/>
+<p>Add a slide <code>[post] http://3.92.225.2:8001/api/v1/slide</code></p>
+<pre>
+  Authorization's type Bearer Token
+  
+  body in form-data:
+  {
+    [type string required] "slide_name": "slide one",
+    [type file]   "images":"slide_one.png",
+    [type string] "url":"http://3.92.225.2:8001/imgs-slide/slide_one.png"
+  }  
+</pre>
