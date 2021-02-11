@@ -44,9 +44,8 @@ DATABASE=ecommerce
 ## Release
 
 <a href="http://3.92.225.2:8001/api-docs/">
-  <img src="https://img.shields.io/badge/Visit%20on%20the-100.24.31.79-blue.svg?style=popout&logo=amazon-aws"/>
-</a>
-![http://3.92.225.2:8001/api-docs/](http://3.92.225.2:8001/api-docs/)
+  <img src="https://img.shields.io/badge/Visit%20on%20the-3.92.225.2-blue.svg?style=popout&logo=amazon-aws"/>
+</a> http://3.92.225.2:8001/api-docs/
 
 
 ## End Point
