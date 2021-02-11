@@ -143,8 +143,30 @@ exp:.
 <p>Delete a product <code>[delete] http://3.92.225.2:8001/api/v1/products/:idproducts</code></p><br/>
 <p>Get a product <code>[get] http://3.92.225.2:8001/api/v1/products/:idproducts</code></p><br/>
 <p>Edit a product <code>[patch] http://3.92.225.2:8080/api/v1/products/:idproduct</code></p><br/>
-<p>Get all products - paging - search - sort using query params  <code>[get] http://3.92.225.2:8001/api/v1/products?product_condition=baru&order_by=product_price&sort=ASC&limit=10&page=1</code></p><br/>
+<p>Get all products - paging - search - sort using query params  <br/>
+<code>[get] http://3.92.225.2:8001/api/v1/products?product_condition=baru&order_by=product_price&sort=ASC&limit=10&page=1</code></p>
+<br/>
+<pre>
+  query params:
 
+  {
+    product_name,
+    product_category,
+    seller,
+    product_condition,
+    order_by,
+    sort, 
+    limit ,
+    page,
+
+  }
+
+  note: 
+        sort type string default ASC
+        limit type integer
+        page type integer
+</pre>
+<br/>
 <h3>Order</h3><hr/>
 <p>first - Add a product to carts <code>[post] http://3.92.225.2:8001/api/v1/order/addToCart</code></p><br/>
 <p>second - Update carts (status_item) value from pending to order <code>[patch] http://localhost:8001/api/v1/order/changeStsItemAtChart</code></p><br/>
