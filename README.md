@@ -25,8 +25,8 @@ Express.js is a web application framework for Node.js. ![More_about_Express](htt
 4. Turn on Web Server and MySQL can using Third-party tool like xampp, etc.
 5. Create a database with the name post, and Import file [ecommerce.sql](ecommerce.sql) to **phpmyadmin**
 6. Open Postman desktop application or Chrome web app extension that has installed before, 
-<a href="https://www.getpostman.com/collections/9b37cdb72de14add6727">collection_link</a> 
-or test on SWAGGER <a href="http://3.92.225.2:8001/api-docs/#/">http://3.92.225.2:8001/api-docs/#/</a>
+<a href="https://www.getpostman.com/collections/2301f2e9a1e6d0eb00ba">Postman</a> 
+or test on <a href="http://3.92.225.2:8001/api-docs/#/">Swagger</a>
 7. Choose HTTP Method and enter request url.(ex. localhost:8001/api/v1/)
 8. You can see all the end point [here](#end-point)
 
