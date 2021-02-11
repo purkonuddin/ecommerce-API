@@ -12,7 +12,7 @@ const helmet = require('helmet')
 const logger = require('morgan')
 const app = express()
 
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 8001
 const IP = process.env.IP
 
 // app.use((req, res, next) => {

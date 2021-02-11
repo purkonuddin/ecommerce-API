@@ -26,7 +26,7 @@ Express.js is a web application framework for Node.js. ![More_about_Express](htt
 5. Create a database with the name post, and Import file [ecommerce.sql](ecommerce.sql) to **phpmyadmin**
 6. Open Postman desktop application or Chrome web app extension that has installed before, 
 <a href="https://www.getpostman.com/collections/9b37cdb72de14add6727">collection_link</a> 
-or test on SWAGGER<a href="http://localhost:8001/api-docs/#/">localhost:8001/api-docs/#/</a>
+or test on SWAGGER <a href="http://3.92.225.2:8001/api-docs/#/">http://3.92.225.2:8001/api-docs/#/</a>
 7. Choose HTTP Method and enter request url.(ex. localhost:8001/api/v1/)
 8. You can see all the end point [here](#end-point)
 
@@ -43,41 +43,118 @@ DATABASE=ecommerce
 
 ## Release
 
-<a href="http://localhost:8001">
+<a href="http://3.92.225.2:8001/api-docs/">
   <img src="https://img.shields.io/badge/Visit%20on%20the-100.24.31.79-blue.svg?style=popout&logo=amazon-aws"/>
 </a>
-![ecommerce.sql](https://user-images.githubusercontent.com/44079569/94638786-f3cd4280-0304-11eb-9c31-29d0fc4cc95c.PNG)
+![http://3.92.225.2:8001/api-docs/](http://3.92.225.2:8001/api-docs/)
 
 
 ## End Point
-<h3>user</h3>
-<p>signup <span>[post] http://localhost:8001/api/v1/sign-up</span></p>
-<p>login <span>[post] http://localhost:8001/api/v1/user/login</span></p>
-<p>logout  <span>[get] http://localhost:8001/api/v1/user/logout</span></p>
-<p>reset password  <span>[post] http://localhost:8001/v1/api/user/update-password</span></p>
-<p>get my profile  <span>[get] http://localhost:8001/v1/api/user</span></p>
-<p>edit my profile  <span>[patch] http://localhost:8001/v1/api/user/edit-profile</span></p>
-<p>verifi email  <span>[get] http://localhost:8001/api/v1/user/verifikasi-email/:token</span></p>
-<p>forget password <span>[post] http://localhost:8001/api/v1/user/forgot-password</span></p>
-<p>add address for customer  <span>[post] http://localhost:8001/api/v1/user/customer-address</span></p>
-<p>get all addres for customer  <span>[get] http://localhost:8001/api/v1/user/customer-address</span></p>
+<h3>user</h3><hr/>
+<p>login <code>[post] http://localhost:8001/api/v1/login</code></p>
+<pre>
+exp:.
+{
+    "login_email":"purkonud12119617@gmail.com",
+    "login_password":"pass123"
+}
+</pre>
+<br/>
+<p>sign-up <code>[post] sign-up post http://3.92.225.2:8001/api/v1/user/sign-up</code></p>
+<pre>
+exp:.
+{
+    "account_type": "seller", 
+    "username" : "Mr Swagger",
+    "useremail": "purkonuddin25@gmail.com",
+    "password" : "pass123",
+    "password_repeat" : "pass123",
+    "userphone":"085779919114",
+    "userstore":"Toko Swagger"
+}
 
-<h3>products</h3>
-<p>insert a product <span>[post] http://localhost:8001/api/v1/products</span></p>
-<p>delete a product <span>[delete] http://localhost:8001/api/v1/products/:idproducts</span></p>
-<p>get a product <span>[get] http://localhost:8001/api/v1/products/:idproducts</span></p>
-<p>edit a product <span>[patch] http://localhost:8080/api/v1/products/:idproduct</span></p>
-<p>get all products - paging - search - sort using query params  <span>[get] http://localhost:8001/api/v1/products?product_condition=baru&order_by=product_price&sort=ASC&limit=10&page=1</span></p>
+note:. account_type's type enum('seller','customer','admin')
+      if success then check your email, and tap on verify email link
 
-<h3>order</h3>
-<p>add a product to carts <span>[post] http://localhost:8001/api/v1/order/addToCart</span></p>
-<p>update carts (status_item) value from pending to order <span>[patch] http://localhost:8001/api/v1/order/changeStsItemAtChart</span></p>
-<p>create order  <span>[post] http://localhost:8001/api/v1/order/create-order</span></p>
+      verifi email:  <code>[get] http://3.92.225.2:8001/api/v1/user/verifikasi-email/:token</code>
+</pre>
+<br/> 
 
-<h3>category</h3>
-<p>add category  <span>[post] http://localhost:8001/api/v1/category</span></p>
-<p>get all categories  <span>[get] http://localhost:8001/api/v1/category</span></p>
-<p>delete a category  <span>[delete] http://localhost:8001/api/v1/category/:idcategory</span></p>
+<p>logout  <span>[get] http://3.92.225.2:8001/api/v1/user/logout</span></p>
+<br/>
 
-<h3>slide</h3>
-<p>add a slide <span>[post] http://localhost:8001/api/v1/slide</span></p>
+<p>reset password  <code>[post] http://3.92.225.2:8001/api/v1/user/update-password</code></p>
+<pre>
+
+  Authorization's type Bearer Token
+
+{
+    "newpassword":"AmikBsi12119617",
+    "newpassword_repeat":"AmikBsi12119617"
+}
+</pre>
+<br/>
+<p>get my profile  <span>[get] http://3.92.225.2:8001/api/v1/user</span></p>
+<pre>
+  Authorization's type Bearer Token
+</pre>
+<br/>
+
+<p>edit my profile  <code>[patch] http://3.92.225.2:8001/api/v1/user/edit-profile</code></p>
+<pre>
+  Authorization's type Bearer Token
+
+  body in formData:
+  {
+    user_email (required) type string
+    user_phone (required) type string
+    gender's type enum('laki-laki','perempuan')
+    date_of_birth type date
+    images type file
+  }
+</pre>
+<br/>
+<p>forget password <code>[post] http://3.92.225.2:8001/api/v1/user/forgot-password</code></p>
+<pre>
+  {
+    "email":"purkonud12119617@gmail.com"
+  }
+</pre>
+<br/>
+<p>add customer's address <span>[post] http://3.92.225.2:8001/api/v1/user/customer-address</span></p>
+<pre>
+  Authorization's type Bearer Token
+ 
+  {
+    "address":"kp. gelap gulita rt.01 rw.01, desa hujan",
+    "primary_address":"true"
+  } 
+
+  note:. primary_address's type enum('true','false') DEFAULT 'false'
+
+</pre>
+<br>
+<p>get customer's address  <span>[get] http://3.92.225.2:8001/api/v1/user/customer-address</span></p>
+<pre>
+  Authorization's type Bearer Token 
+</pre>
+<br>
+<h3>products</h3><hr/>
+<p>insert a product <span>[post] http://3.92.225.2:8001/api/v1/products</span></p><br/>
+<p>delete a product <span>[delete] http://3.92.225.2:8001/api/v1/products/:idproducts</span></p><br/>
+<p>get a product <span>[get] http://3.92.225.2:8001/api/v1/products/:idproducts</span></p><br/>
+<p>edit a product <span>[patch] http://3.92.225.2:8080/api/v1/products/:idproduct</span></p><br/>
+<p>get all products - paging - search - sort using query params  <span>[get] http://3.92.225.2:8001/api/v1/products?product_condition=baru&order_by=product_price&sort=ASC&limit=10&page=1</span></p><br/>
+
+<h3>order</h3><hr/>
+<p>add a product to carts <span>[post] http://3.92.225.2:8001/api/v1/order/addToCart</span></p>
+<p>update carts (status_item) value from pending to order <span>[patch] http://localhost:8001/api/v1/order/changeStsItemAtChart</span></p><hr/>
+<p>create order  <span>[post] http://3.92.225.2:8001/api/v1/order/create-order</span></p><br/>
+
+<h3>category</h3><hr/>
+<p>add category  <span>[post] http://3.92.225.2:8001/api/v1/category</span></p>
+<p>get all categories  <span>[get] http://3.92.225.2:8001/api/v1/category</span></p>
+<p>delete a category  <span>[delete] http://3.92.225.2:8001/api/v1/category/:idcategory</span></p>
+
+<h3>slide</h3><hr/>
+<p>add a slide <span>[post] http://3.92.225.2:8001/api/v1/slide</span></p>

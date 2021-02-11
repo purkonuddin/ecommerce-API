@@ -60,7 +60,7 @@ INSERT INTO `tb_categories` (`id`, `category_id`, `category_name`, `category_ima
 --
 
 CREATE TABLE `ecommerce`.`tb_customer_address` (
-  `id` int NOT NULL,
+  `id` int AUTO_INCREMENT PRIMARY KEY NOT NULL,
   `customer_id` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
   `primary_address` enum('true','false') NOT NULL DEFAULT 'false'
@@ -83,7 +83,7 @@ INSERT INTO `tb_customer_address` (`id`, `customer_id`, `address`, `primary_addr
 --
 
 CREATE TABLE `ecommerce`.`tb_orders` (
-  `id` int NOT NULL,
+  `id` int AUTO_INCREMENT PRIMARY KEY NOT NULL,
   `order_number` varchar(255) DEFAULT NULL,
   `order_date` datetime DEFAULT NULL,
   `expire_date` datetime DEFAULT NULL,
@@ -116,7 +116,7 @@ INSERT INTO `tb_orders` (`id`, `order_number`, `order_date`, `expire_date`, `cus
 --
 
 CREATE TABLE `ecommerce`.`tb_order_detail` (
-  `id` int NOT NULL,
+  `id` int AUTO_INCREMENT PRIMARY KEY NOT NULL,
   `order_number` varchar(255) NOT NULL,
   `member_id` varchar(255) NOT NULL,
   `product_id` varchar(255) NOT NULL,
@@ -148,7 +148,7 @@ INSERT INTO `tb_order_detail` (`id`, `order_number`, `member_id`, `product_id`, 
 --
 
 CREATE TABLE `ecommerce`.`tb_products` (
-  `id` int NOT NULL,
+  `id` int AUTO_INCREMENT PRIMARY KEY NOT NULL,
   `product_id` varchar(255) DEFAULT NULL,
   `product_name` varchar(255) DEFAULT NULL,
   `product_description` text DEFAULT NULL,
@@ -164,7 +164,8 @@ CREATE TABLE `ecommerce`.`tb_products` (
   `product_size` varchar(255) DEFAULT NULL,
   `product_color` varchar(255) DEFAULT NULL,
   `added_at` datetime NOT NULL,
-  `updated_at` datetime
+  `updated_at` datetime,
+  UNIQUE KEY `idx_product_id` (`product_id`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -183,12 +184,13 @@ INSERT INTO `tb_products` (`id`, `product_id`, `product_name`, `product_descript
 --
 
 CREATE TABLE `ecommerce`.`tb_slide` (
-  `id` int NOT NULL,
+  `id` int AUTO_INCREMENT PRIMARY KEY NOT NULL,
   `slide_id` varchar(255) NOT NULL,
   `slide_name` varchar(255) NOT NULL,
   `slide_image` varchar(255) NOT NULL,
   `url` varchar(255) NOT NULL,
-  `aktif` enum('0','1') NOT NULL DEFAULT '1'
+  `aktif` enum('0','1') NOT NULL DEFAULT '1',
+  UNIQUE KEY `idx_slide_name` (`slide_name`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -205,7 +207,7 @@ INSERT INTO `tb_slide` (`id`, `slide_id`, `slide_name`, `slide_image`, `url`, `a
 --
 
 CREATE TABLE `ecommerce`.`tb_user` (
-  `id` int NOT NULL,
+  `id` int AUTO_INCREMENT PRIMARY KEY NOT NULL,
   `user_id` varchar(255) DEFAULT NULL,
   `user_name` varchar(255) DEFAULT NULL,
   `user_email` varchar(255) DEFAULT NULL,
@@ -221,7 +223,11 @@ CREATE TABLE `ecommerce`.`tb_user` (
   `user_image` varchar(255) DEFAULT NULL,
   `email_verify_token` varchar(255) DEFAULT NULL,
   `email_verified` enum('0','1') NOT NULL,
-  `account_type` enum('seller','customer','admin') NOT NULL
+  `account_type` enum('seller','customer','admin') NOT NULL,
+  UNIQUE KEY `idx_user_id` (`user_id`),
+  UNIQUE KEY `idx_user_id` (`user_email`),
+  UNIQUE KEY `idx_user_id` (`user_phone`),
+  UNIQUE KEY `idx_user_id` (`user_store`),
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -232,129 +238,6 @@ INSERT INTO `tb_user` (`id`, `user_id`, `user_name`, `user_email`, `user_phone`,
 (27, '7d322a82-9b7b-4457-bc15-547f870327aa', 'purkonuddin', 'purkonud2508@bsi.ac.id', '085779919112', 'laki-laki', '2020-09-28', NULL, NULL, 'null', '$2b$10$su1EJ9BnOMUP/pJtf9vRT.0lcQ2YR.qrM8N7WMEaHTWuu3OQOrxv2', '2020-09-29 11:46:04', '2020-09-29 12:28:39', 'http://localhost:8001/imgs-users/7d322a82-9b7b-4457-bc15-547f870327aa-purkonuddin-.jpeg', '402a01c88fb321b5fd5e431718df6510f3dac075', '1', 'customer'),
 (28, 'eee8d94f-0091-4ae3-8fdb-acc2b177fa3f', 'Mr Corona', 'purkonud12119617@gmail.com', '099779919112', 'laki-laki', '2020-09-29', NULL, NULL, 'Toko ABC', '$2b$10$o29VbOYOe0ji3NgD6IWHQOXpoHQFfCbsRyAHhBiPXXoOZU7R.V1N2', '2020-09-29 13:32:34', '2020-09-29 13:34:02', NULL, 'a5fd65b14dad558830eedc31a2e5807c550e7e29', '1', 'seller');
 
---
--- Indexes for dumped tables
---
-
---
--- Indeks untuk tabel `tb_cart`
---
-ALTER TABLE `ecommerce`.`tb_cart`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `tb_categories`
---
-ALTER TABLE `ecommerce`.`tb_categories`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `tb_customer_address`
---
-ALTER TABLE `ecommerce`.`tb_customer_address`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `tb_orders`
---
-ALTER TABLE `ecommerce`.`tb_orders`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `order_number` (`order_number`);
-
---
--- Indeks untuk tabel `tb_order_detail`
---
-ALTER TABLE `ecommerce`.`tb_order_detail`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `tb_products`
---
-ALTER TABLE `ecommerce`.`tb_products`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `tb_slide`
---
-ALTER TABLE `ecommerce`.`tb_slide`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indeks untuk tabel `tb_user`
---
-ALTER TABLE `ecommerce`.`tb_user`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `user_idx` (`user_id`);
-
---
--- AUTO_INCREMENT untuk tabel yang dibuang
---
-
---
--- AUTO_INCREMENT untuk tabel `tb_cart`
---
-ALTER TABLE `ecommerce`.`tb_cart`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
-
---
--- AUTO_INCREMENT untuk tabel `tb_categories`
---
-ALTER TABLE `ecommerce`.`tb_categories`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
--- AUTO_INCREMENT untuk tabel `tb_customer_address`
---
-ALTER TABLE `ecommerce`.`tb_customer_address`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT untuk tabel `tb_orders`
---
-ALTER TABLE `ecommerce`.`tb_orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
-
---
--- AUTO_INCREMENT untuk tabel `tb_order_detail`
---
-ALTER TABLE `ecommerce`.`tb_order_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
-
---
--- AUTO_INCREMENT untuk tabel `tb_products`
---
-ALTER TABLE `ecommerce`.`tb_products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=83;
-
---
--- AUTO_INCREMENT untuk tabel `tb_slide`
---
-ALTER TABLE `ecommerce`.`tb_slide`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT untuk tabel `tb_user`
---
-ALTER TABLE `ecommerce`.`tb_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29; 
-  
---
--- UNIQUE KEY 
---
-ALTER TABLE `ecommerce`.`tb_user`
- ADD CONSTRAINT idx_user_id UNIQUE KEY(user_id);
- 
-ALTER TABLE `ecommerce`.`tb_user`
- ADD CONSTRAINT idx_user_store UNIQUE KEY(user_store);
-
-ALTER TABLE `ecommerce`.`tb_products`
- ADD CONSTRAINT idx_product_id UNIQUE KEY(product_id);
- 
-ALTER TABLE `ecommerce`.`tb_slide`
- ADD CONSTRAINT idx_slide_id UNIQUE KEY(slide_id);
-
-ALTER TABLE `ecommerce`.`tb_order_detail`
- ADD CONSTRAINT idx_order_detail_id UNIQUE KEY(order_detail_id);
 COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
