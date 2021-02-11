@@ -138,12 +138,33 @@ exp:.
   Authorization's type Bearer Token 
 </pre>
 <br>
+
+
 <h3>Products</h3><hr/>
-<p>Insert a product <code>[post] http://3.92.225.2:8001/api/v1/products</code></p><br/>
+<p>Create a product <code>[post] http://3.92.225.2:8001/api/v1/products</code></p><br/>
+<pre>
+
+  Authorization's type Bearer Token
+
+  {
+    "product_name" string,
+    "product_description"string,
+    "images" file,
+    "product_category" FK to tb_categories,
+    "product_price" integer,
+    "disc" float,
+    "product_stock" integer,
+    "product_rating" integer,
+    "product_condition" string,
+    "product_size" string,
+    "product_color" string,
+
+  }
+</pre>
 <p>Delete a product <code>[delete] http://3.92.225.2:8001/api/v1/products/:idproducts</code></p><br/>
-<p>Get a product <code>[get] http://3.92.225.2:8001/api/v1/products/:idproducts</code></p><br/>
+<p>Read product <code>[get] http://3.92.225.2:8001/api/v1/products/:idproducts</code></p><br/>
 <p>Edit a product <code>[patch] http://3.92.225.2:8080/api/v1/products/:idproduct</code></p><br/>
-<p>Get all products - paging - search - sort using query params  <br/>
+<p>Read products - paging - search - sort using query params  <br/>
 <code>[get] http://3.92.225.2:8001/api/v1/products?product_condition=baru&order_by=product_price&sort=ASC&limit=10&page=1</code></p>
 <br/>
 <pre>
