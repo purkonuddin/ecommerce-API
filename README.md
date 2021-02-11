@@ -147,9 +147,9 @@ exp:.
 <p>Get all products - paging - search - sort using query params  <code>[get] http://3.92.225.2:8001/api/v1/products?product_condition=baru&order_by=product_price&sort=ASC&limit=10&page=1</code></p><br/>
 
 <h3>Order</h3><hr/>
-<p>Add a product to carts <code>[post] http://3.92.225.2:8001/api/v1/order/addToCart</code></p><br/>
-<p>Update carts (status_item) value from pending to order <code>[patch] http://localhost:8001/api/v1/order/changeStsItemAtChart</code></p><br/>
-<p>Create order  <code>[post] http://3.92.225.2:8001/api/v1/order/create-order</code></p><br/>
+<p>first - Add a product to carts <code>[post] http://3.92.225.2:8001/api/v1/order/addToCart</code></p><br/>
+<p>second - Update carts (status_item) value from pending to order <code>[patch] http://localhost:8001/api/v1/order/changeStsItemAtChart</code></p><br/>
+<p>last - Create order  <code>[post] http://3.92.225.2:8001/api/v1/order/create-order</code></p><br/>
 
 <h3>Category</h3><hr/>
 <p>Create category  <code>[post] http://3.92.225.2:8001/api/v1/category</code></p><br/>
