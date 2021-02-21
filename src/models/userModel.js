@@ -26,9 +26,9 @@ const setlastlogin = (userid) => {
   })
 }
 
-const login = (email) => {
+const login = (email, accounType) => {
   return new Promise((resolve, reject) => {
-    db.query(`SELECT * FROM ecommerce.tb_user WHERE user_email = '${email}'`, (error, result) => {
+    db.query(`SELECT * FROM ecommerce.tb_user WHERE user_email = '${email}' AND account_type = '${accounType}'`, (error, result) => {
       if (!error) {
         resolve(result)
       } else {
@@ -40,7 +40,7 @@ const login = (email) => {
 
 const setemailverifytoken = (token, userid) => {
   return new Promise((resolve, reject) => {
-    db.query(`UPDATE ecommerce.tb_user SET email_verify_token = '${token}' WHERE user_id='${userid}'`, (error, result) => {
+    db.query(`UPDATE ecommerce.tb_user SET email_verify_token = '${token}',  email_verified ='0' WHERE user_id='${userid}'`, (error, result) => {
       if (!error) {
         resolve(result)
       } else {

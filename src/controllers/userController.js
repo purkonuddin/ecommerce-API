@@ -5,225 +5,193 @@ const gp = require('../helpers/generate-password')
 var async = require('async')
 const customerAddressModel = require('../models/customerAddressModel')
 const crypto = require('crypto')
+const helpers = require('../helpers')
 
 const LoginRev = async (req, res, next) => {
-  const loginEmail = req.body.login_email
-  const loginPassword = req.body.login_password
+  try {
+    const loginEmail = req.body.login_email
+    const loginPassword = req.body.login_password
+    const loginAccountType = req.body.login_account_type
 
-  const [results] = await Promise.all([
-    userModel.login(loginEmail)
-  ])
+    const [results] = await Promise.all([
+      userModel.login(loginEmail, loginAccountType)
+    ])
 
-  // console.log(results)
-  if (results.length <= 0) {
-    return res.status(401).send({
-      object: 'users',
-      action: 'login',
-      msg: 'Email or password is incorrect!'
-    })
-  }
+    // console.log(results)
+    if (results.length <= 0) {
+      helpers.customErrorResponse(res, 400, `Email ${loginEmail} belum terdaftar sebagai ${loginAccountType}!`)
+    } else {
+      //  cek emailverified status 0
+      if (results[0].email_verified === '0' || results[0].email_verified === 0) {
+        helpers.customErrorResponse(res, 400, `cek email ${results[0].user_email} untuk verifikasi, atau verifikasi ulang melalui halaman forget password`)
+      } else {
+        // check password
+        bcrypt.compare(loginPassword, results[0].user_password, (bErr, bResult) => {
+          if (bErr) {
+            // throw bErr
+            helpers.customErrorResponse(res, 401, bErr)
+          }
 
-  //  cek emailverified status 0
-  if (results[0].email_verified === '0') {
-    return res.status(401).send({
-      object: 'users',
-      action: 'login',
-      msg: `cek email ${results[0].user_email} untuk verifikasi, atau melalui halaman verifikasi account`
-    })
-  }
+          if (bResult === false) {
+            // false
+            helpers.customErrorResponse(res, 400, 'Password is incorrect!')
+          } else {
+            const userData = {
+              user_name: results[0].user_name,
+              user_id: results[0].user_id,
+              account_type: results[0].account_type,
+              user_store: results[0].user_store
+            }
 
-  // check password
-  bcrypt.compare(loginPassword, results[0].user_password, (bErr, bResult) => {
-    if (bErr) {
-      // throw bErr
-      return res.status(401).send({
-        object: 'users',
-        action: 'login',
-        msg: 'Username or password is incorrect!'
-      })
+            const token = jwt.sign(userData, 'SECRETKEY', { expiresIn: '7d' })
+
+            const lastlogin = userModel.setlastlogin(results[0].user_id)
+            lastlogin.then(() => {}).catch(err => new Error(err))
+            req.body.object = 'user'
+            req.body.action = 'login'
+            req.body.message = 'login success'
+            req.body.user_id = results[0].user_id
+            req.body.user_name = results[0].user_name
+            req.body.account_type = results[0].account_type
+            req.body.user_store = results[0].user_store
+            req.body.user_image = results[0].user_image
+            req.body.token = token
+            req.body.user_email = results[0].user_email
+            delete req.body.login_password
+            delete req.body.windowWidth
+            delete req.body.isSentResetPassword
+            delete req.body.login_account_type
+            delete req.body.login_email
+
+            next()
+          }
+        })
+      }
     }
-
-    const userData = {
-      user_name: results[0].user_name,
-      user_id: results[0].user_id,
-      account_type: results[0].account_type,
-      user_store: results[0].user_store
-    }
-
-    const token = jwt.sign(userData, 'SECRETKEY', { expiresIn: '7d' })
-
-    const lastlogin = userModel.setlastlogin(results[0].user_id)
-    lastlogin.then(() => {}).catch(err => new Error(err))
-    req.body.object = 'user'
-    req.body.action = 'login'
-    req.body.msg = null
-    req.body.user_id = results[0].user_id
-    req.body.user_name = results[0].user_name
-    req.body.account_type = results[0].account_type
-    req.body.user_store = results[0].user_store
-    req.body.user_image = results[0].user_image
-    req.body.token = token
-    req.body.login_password = results[0].user_password
-    req.body.login_email = results[0].user_email
-
-    next()
-  })
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 const Logout = async (req, res, next) => {
-  const userId = req.userData.user_id
-  const [results] = await Promise.all([
-    userModel.setemailverifytoken(null, userId)
-  ])
+  try {
+    const userId = req.userData.user_id
+    const [results] = await Promise.all([
+      userModel.setemailverifytoken(null, userId)
+    ])
 
-  // console.log(results)
-  /**
-   * fieldCount: 0,
-   * affectedRows: 1,
-   * insertId: 0,
-   * serverStatus: 2,
-   * warningCount: 0,
-   * message: '(Rows matched: 1  Changed: 0  Warnings: 0',
-   * protocol41: true,
-   * changedRows: 0
-   */
+    if (results.affectedRows <= 0) {
+      helpers.customErrorResponse(res, 400, 'gagal logout')
+    } else {
+      const userData = {
+        user_name: null,
+        user_id: null,
+        account_type: null,
+        user_store: null
+      }
 
-  if (results.affectedRows <= 0) {
-    return res.send({
-      object: 'user',
-      action: 'logout',
-      msg: 'gagal logout'
-    })
+      req.body.object = 'users'
+      req.body.action = 'logout'
+      req.body.message = 'logout success'
+      req.userData = userData
+
+      next()
+    }
+  } catch (error) {
+    console.log(error)
   }
-
-  const userData = {
-    user_name: null,
-    user_id: null,
-    account_type: null,
-    user_store: null
-  }
-
-  req.body.object = 'users'
-  req.body.action = 'logout'
-  req.body.msg = null
-  req.userData = userData
-
-  next()
 }
 
 const UpdatePassword = async (req, res, next) => {
-  const newpwd = req.body.newpassword
-  const userId = req.userData.user_id
-  bcrypt.hash(newpwd, 10, (err, hash) => {
-    if (err) {
-      return res.status(500).send({
-        msg: err
-      })
-    } else {
-      const updatePassword = userModel.updatepassword(hash, userId)
-      updatePassword.then((result) => {
-        if (result.affectedRows <= 0) {
-          return res.send({
-            object: 'user',
-            action: 'update password',
-            msg: 'gagal update password'
-          })
-        }
+  try {
+    const newpwd = req.body.newpassword
+    const userId = req.userData.user_id
+    bcrypt.hash(newpwd, 10, (err, hash) => {
+      if (err) {
+        return res.status(500).send({
+          msg: err
+        })
+      } else {
+        const updatePassword = userModel.updatepassword(hash, userId)
+        updatePassword.then((result) => {
+          if (result.affectedRows <= 0) {
+            helpers.customErrorResponse(res, 400, 'gagal update password')
+          } else {
+            req.body.object = 'users'
+            req.body.action = 'update password'
+            req.body.message = 'password updated success'
+            req.body.user = req.userData
+            req.body.newpassword = newpwd
 
-        req.body.object = 'users'
-        req.body.action = 'update password'
-        req.body.msg = null
-        req.body.user = req.userData
-        req.body.newpassword = newpwd
-
-        next()
-      }).catch(err => new Error(err))
-    }
-  })
+            next()
+          }
+        }).catch(err => new Error(err))
+      }
+    })
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 const ForgetPassword = async (req, res, next) => {
-  const pwd = gp.generate(8)
-  const userEmail = req.body.email
+  try {
+    const pwd = gp.generate(8)
+    const userEmail = req.body.email
 
-  const [results] = await Promise.all([
-    userModel.login(userEmail)
-  ])
+    const [results] = await Promise.all([
+      userModel.login(userEmail)
+    ])
 
-  if (results.length <= 0) {
-    return res.send({
-      object: 'user',
-      action: 'forgot password',
-      msg: `email ${req.body.email} tidak terdaftar</p>`
-    })
-  }
-
-  const userid = results[0].user_id
-  const userName = results[0].user_name
-
-  bcrypt.hash(pwd, 10, (err, hash) => {
-    if (err) {
-      return res.status(500).send({
-        msg: err
-      })
+    if (results.length <= 0) {
+      helpers.customErrorResponse(res, 400, `email ${req.body.email} tidak terdaftar`)
     } else {
-      const password = hash
-      userModel.updatepassword(password, userid).then((result) => {
-        // console.log(result)
-        /*
-        fieldCount: 0,
-        affectedRows: 1,
-        insertId: 0,
-        serverStatus: 2,
-        warningCount: 0,
-        message: '(Rows matched: 1  Changed: 1  Warnings: 0',
-        protocol41: true,
-        changedRows: 1
-        */
+      const userid = results[0].user_id
+      const userName = results[0].user_name
 
-        if (result.affectedRows !== 1 && result.changedRows !== 1) {
-          return res.send({
-            result: {
-              object: 'users',
-              action: 'forgot password',
-              msg: 'gagal update password'
+      bcrypt.hash(pwd, 10, (err, hash) => {
+        if (err) {
+          helpers.customErrorResponse(res, 500, err)
+        } else {
+          const password = hash
+          userModel.updatepassword(password, userid).then((result) => {
+            if (result.affectedRows !== 1 && result.changedRows !== 1) {
+              helpers.customErrorResponse(res, 400, 'gagal update password')
+            } else {
+              // kirim email
+              const emailContent = `<p>Hai ${userEmail},</p>
+              <p>password anda telah di perbarui, gunakan untuk login.</p></br>
+              <ul>
+                <li>nama : ${userName}</li>
+                <li>password : ${pwd}</li>
+              </ul>`
+
+              req.body.email_content = emailContent
+              req.body.email_subject = 'Email Verification'
+              req.body.user_name = userName
+              req.body.user_email = userEmail
+
+              next()
             }
-          })
+          }).catch(err => new Error(err))
         }
-
-        // kirim email
-        const emailContent = `<p>Hai ${userEmail},</p>
-                            <p>password anda telah di perbarui, gunakan untuk login.</p></br>
-                            <ul>
-                              <li>nama : ${userName}</li>
-                              <li>password : ${pwd}</li>
-                            </ul>`
-
-        req.body.email_content = emailContent
-        req.body.email_subject = 'Email Verification'
-        req.body.user_name = userName
-        req.body.user_email = userEmail
-
-        next()
-      }).catch(err => new Error(err))
+      })
     }
-  })
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 const SignUp = (req, res, next) => {
   const userName = req.body.username
   const userEmail = req.body.useremail
-  const userPhone = req.body.userphone
-  // const getusername = userModel.getusername(userName)
+  const userPhone = req.body.user_phone
   const getusername = userModel.getFieldAlreadyInUse(userName, userEmail, userPhone)
 
   getusername.then((result) => {
     if (result.length) {
       result.forEach(element => {
         const inUse = element.user_name === userName ? 'username' : element.user_email === userEmail ? 'email' : 'phone number'
-        return res.status(409).send({
-          msg: `This ${inUse} is already in use!`
-        })
+        helpers.customErrorResponse(res, 400, `This ${inUse} is already in use!`)
       })
     } else {
       // username is available
@@ -237,7 +205,7 @@ const SignUp = (req, res, next) => {
           const newUser = {
             user_name: req.body.username,
             user_email: req.body.useremail,
-            user_phone: req.body.userphone || null,
+            user_phone: req.body.user_phone || null,
             user_store: req.body.userstore || null,
             user_password: hash,
             user_image: null,
@@ -263,10 +231,7 @@ const SignUp = (req, res, next) => {
                     //   set token
                     userModel.setemailverifytoken(token, user.user_id)
                   } catch (error) {
-                    return res.status(500).send({
-                      status: 'userModule.setemailverifytoken()',
-                      msg: error
-                    })
+                    helpers.customErrorResponse(res, 500, error)
                   }
                   done(err, token, user)
                 }).catch()
@@ -275,7 +240,7 @@ const SignUp = (req, res, next) => {
               function (token, user, done) {
                 const userEmail = req.body.useremail
                 const emailSubject = 'Email Verification'
-                const emailContent = `<p>Hai ${user.user_email},</p>' +
+                const emailContent = `<p>Hai ${user.user_email},</p>
                 <p>terimakasih telah membuat akun di aplikasi kami.</p></br>
                 <ul>
                 <li>user_id : ${user.user_id}</li>
@@ -284,12 +249,15 @@ const SignUp = (req, res, next) => {
                 <li>account_type : ${user.account_type}</li>
                 <li>user_phone : ${user.user_phone}</li>
                 </ul></br>
-                Silahkan verifikasi email dengan mengklik link berikut:</br>
+                Silahkan verifikasi email dengan mengklik link berikut
                 <a href=http://${req.headers.host}/api/v1/user/verifikasi-email/${token}>Konfirmasi</a>`
 
                 req.body.user_email = userEmail
                 req.body.email_subject = emailSubject
                 req.body.email_content = emailContent
+                delete req.body.password
+                delete req.body.password_repeat
+
                 next()
               }
             ])
@@ -305,119 +273,211 @@ const SignUp = (req, res, next) => {
 }
 
 const VerifikasiEmail = function (req, res, next) {
-  const token = req.params.token
-  const user = userModel.updatemailverifiedstatus(token)
-  user.then((result) => {
-    if (result.affectedRows !== 1 && result.changedRows !== 1) {
-      return res.send({
-        result: {
-          object: 'users',
-          action: 'verifikasi email',
-          msg: 'gagal verifikasi'
-        }
-      })
-    }
-
-    req.body.object = 'users'
-    req.body.action = 'verifikasi email'
-    req.body.msg = 'verifikasi berhasil, silahkan login untuk melanjutkan'
-    next()
-  }).catch((error) => {
+  try {
+    const token = req.params.token
+    console.log(token)
+    const user = userModel.updatemailverifiedstatus(token)
+    user.then((result) => {
+      console.log(result)
+      if (result.affectedRows !== 1 && result.changedRows !== 1) {
+        helpers.customErrorResponse(res, 400, 'gagal verifikasi')
+      } else {
+        req.body.object = 'users'
+        req.body.action = 'verifikasi email'
+        req.body.msg = 'verifikasi berhasil, silahkan login untuk melanjutkan'
+        next()
+      }
+    }).catch((error) => {
+      console.log(error)
+    })
+  } catch (error) {
     console.log(error)
-  })
+  }
 }
 
 const GetUserById = async (req, res, next) => {
-  const originalUrl = req.originalUrl.split('/')
-  const userId = req.userData.user_id
-  const [results] = await Promise.all([
-    userModel.getMyProfile(userId, originalUrl[3])
-  ])
-  req.body.object = 'user'
-  req.body.action = 'get my profile data'
-  req.body.myprofile = results
-  console.log(results)
+  try {
+    const originalUrl = req.originalUrl.split('/')
+    const userId = req.userData.user_id
+    const [results] = await Promise.all([
+      userModel.getMyProfile(userId, originalUrl[3])
+    ])
+    req.body.object = 'user'
+    req.body.action = 'get my profile data'
+    req.body.myprofile = results
+    console.log(results)
 
-  next()
+    next()
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 const EditProfile = async (req, res, next) => {
-  const userId = req.userData.user_id
-  const dataUser = {
-    user_name: req.body.user_name,
-    user_email: req.body.user_email,
-    user_phone: req.body.user_phone,
-    gender: req.body.gender,
-    date_of_birth: req.body.date_of_birth,
-    user_image: req.body.files
-  }
-  const [results] = await Promise.all([
-    userModel.updateProfile(dataUser, userId)
-  ])
+  try {
+    const userId = req.userData.user_id
+    const dataUser = {
+      user_name: req.body.user_name,
+      user_email: req.body.user_email,
+      user_phone: req.body.user_phone,
+      gender: req.body.gender,
+      date_of_birth: req.body.date_of_birth,
+      user_image: req.body.files
+    }
+    const [results] = await Promise.all([
+      userModel.updateProfile(dataUser, userId)
+    ])
 
-  if (results.changedRows !== 1 && results.affectedRows !== 1) {
-    return res.send({
-      object: 'user',
-      action: 'edit my profile data',
-      msg: `tidak ada data di update untuk UserId ${userId} `
-    })
+    if (results.changedRows !== 1 && results.affectedRows !== 1) {
+      helpers.customErrorResponse(res, 400, `tidak ada data di update untuk UserId ${userId}`)
+    } else {
+      req.body.object = 'users'
+      req.body.msg = `user dengan ID ${userId} telah diupdate`
+      next()
+    }
+  } catch (error) {
+    console.log(error)
   }
-
-  req.body.object = 'users'
-  req.body.msg = `user dengan ID ${userId} telah diupdate`
-  next()
 }
 
 const InsertAddress = async (req, res, next) => {
-  const userId = req.userData.user_id
-  const dataAddress = {
-    customer_id: userId,
-    address: req.body.address,
-    primary_address: req.body.primary_address
+  try {
+    const userId = req.userData.user_id
+    const dataAddress = {
+      customer_id: userId,
+      address: req.body.address,
+      primary_address: req.body.primary_address
+    }
+
+    const [insertAddress] = await Promise.all([
+      customerAddressModel.insertAddress(dataAddress)
+    ])
+
+    if (insertAddress.affectedRows !== 1) {
+      helpers.customErrorResponse(res, 400, 'tidak ada data yang ditambahkan')
+    } else {
+      req.body.object = 'customer_address'
+      req.body.action = 'insert'
+      req.body.msg = null
+      req.body.id = insertAddress.insertId
+      req.body.user_id = userId
+
+      next()
+    }
+  } catch (error) {
+    console.log(error)
   }
-
-  const [insertAddress] = await Promise.all([
-    customerAddressModel.insertAddress(dataAddress)
-  ])
-
-  if (insertAddress.affectedRows !== 1) {
-    return res.send({
-      object: 'customer_address',
-      action: 'insert',
-      msg: 'tidak ada data yang ditambahkan'
-    })
-  }
-
-  req.body.object = 'customer_address'
-  req.body.action = 'insert'
-  req.body.msg = null
-  req.body.id = insertAddress.insertId
-  req.body.user_id = userId
-
-  next()
 }
 
 const GetAllCustomerAddress = async (req, res, next) => {
-  const userId = req.userData.user_id
+  try {
+    const userId = req.userData.user_id
 
-  const [address] = await Promise.all([
-    customerAddressModel.getAllCustomerAddress(userId)
-  ])
+    const [address] = await Promise.all([
+      customerAddressModel.getAllCustomerAddress(userId)
+    ])
 
-  if (address.length <= 0) {
-    return res.send({
-      object: 'customer_address',
-      action: 'insert',
-      msg: 'tidak ada data yang ditampilkan'
-    })
+    if (address.length <= 0) {
+      helpers.customErrorResponse(res, 400, 'tidak ada data yang ditambahkan')
+    } else {
+      req.body.object = 'customer_address'
+      req.body.action = 'get my address'
+      req.body.msg = null
+      req.body.customer_address = address
+
+      next()
+    }
+  } catch (error) {
+    console.log(error)
   }
+}
 
-  req.body.object = 'customer_address'
-  req.body.action = 'get my address'
-  req.body.msg = null
-  req.body.customer_address = address
+const SendResetLinkByEmail = async (req, res, next) => {
+  try {
+    const accounType = req.body.account_type
+    const resetEmail = req.body.email
+    const cekEmailUser = userModel.login(resetEmail, accounType)
+    cekEmailUser.then((results) => {
+      if (results.length <= 0) {
+        helpers.customErrorResponse(res, 400, `email ${req.body.email} tidak terdaftar`)
+      } else {
+        async.waterfall([
+          function (done) {
+            crypto.randomBytes(20, function (err, buf) {
+              var token = buf.toString('hex')
+              done(err, token)
+            })
+          },
+          async function (token, done) {
+            const setToken = await userModel.setemailverifytoken(token, results[0].user_id)
+            // console.log('@@header:', req.headers)
+            if (setToken.changedRows === 1 && setToken.affectedRows === 1) {
+              const userEmail = req.body.email
+              const emailSubject = 'Email Verification'
+              const emailContent = `<p>Hai ${results[0].user_email},</p>
+              <p>Akun anda telah terdaftar sebagai:}.</p></br>
+              <ul>
+              <li>user_id : ${results[0].user_id}</li>
+              <li>user_name : ${results[0].user_name}</li>
+              <li>account_type : ${results[0].account_type}</li>
+              <li>user_phone : ${results[0].user_phone}</li>
+              </ul></br>
+              Silahkan reset password dengan mengklik link berikut <a href=${req.headers.origin}/reset_password/${token}?id=${results[0].user_id}&email=${userEmail}>Reset password</a>
+              Manual link: <code>${req.headers.origin}/reset_password/${token}?id=${results[0].user_id}&email=${userEmail}</code>
+              `
+              req.body.user_email = userEmail
+              req.body.email_subject = emailSubject
+              req.body.email_content = emailContent
+              delete req.body.email
+              delete req.body.windowWidth
 
-  next()
+              next()
+            } else {
+              helpers.customErrorResponse(res, 400, 'gagal set token, silahkan ulanngi lagi')
+            }
+          }
+        ])
+      }
+    }).catch(err => {
+      throw err
+    })
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const ResetPassword = async (req, res, next) => {
+  try {
+    const newpwd = req.body.newpassword
+    const userId = req.body.user_id
+    bcrypt.hash(newpwd, 10, (err, hash) => {
+      if (err) {
+        return res.status(500).send({
+          msg: err
+        })
+      } else {
+        const updatePassword = userModel.updatepassword(hash, userId)
+        updatePassword.then((result) => {
+          if (result.affectedRows <= 0) {
+            helpers.customErrorResponse(res, 400, 'gagal update password')
+          } else {
+            req.body.object = 'users'
+            req.body.action = 'update password'
+            req.body.message = 'reset password success'
+            req.body.user = req.userData
+            delete req.body.newpassword
+            delete req.body.newpassword_repeat
+            delete req.body.token
+            delete req.body.windowWidth
+
+            next()
+          }
+        }).catch(err => new Error(err))
+      }
+    })
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 module.exports = {
@@ -430,5 +490,7 @@ module.exports = {
   getUserById: GetUserById,
   editProfile: EditProfile,
   insertAddress: InsertAddress,
-  getAllCustomerAddress: GetAllCustomerAddress
+  getAllCustomerAddress: GetAllCustomerAddress,
+  sendResetLinkByEmail: SendResetLinkByEmail,
+  resetPassword: ResetPassword
 }

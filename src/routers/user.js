@@ -10,6 +10,8 @@ router.route('/').get(userMiddleware.isLoggedIn, userController.getUserById, sen
 router.route('/edit-profile').patch(userMiddleware.isLoggedIn, userController.getUserById, uploadMidleware, userController.editProfile, sendResponse)
 router.route('/update-password').post(userMiddleware.isLoggedIn, userController.updatePassword, sendResponse)
 router.route('/forgot-password').post(userController.forgetPassword, SendEmail, sendResponse)
+router.route('/send-reset-password').post(userMiddleware.validateEmail, userController.sendResetLinkByEmail, SendEmail, sendResponse)
+router.route('/reset-password/:token').post(userMiddleware.validatePassword, userController.verifikasiEmail, userController.resetPassword, sendResponse)
 router.route('/login').post(userMiddleware.validateLogin, userController.login, sendResponse)
 router.route('/logout').get(userMiddleware.isLoggedIn, userController.logout, sendResponse)
 router.route('/sign-up').post(userMiddleware.validateSignup, userController.signUp, SendEmail, sendResponse)
