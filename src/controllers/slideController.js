@@ -1,5 +1,6 @@
 const uuid = require('uuid')
 const slideModel = require('../models/slideModel')
+const helpers = require('../helpers')
 
 const AddSlide = async (req, res, next) => {
   const slideId = uuid.v4()
@@ -18,22 +19,38 @@ const AddSlide = async (req, res, next) => {
   //   console.log(results)
 
   if (results.affectedRows !== 1) {
-    return res.send({
-      object: 'slide',
-      action: 'insert new slide',
-      msg: 'tidak ada data yang ditambahkan'
-    })
+    helpers.customErrorResponse(res, 400, 'tidak ada data yang ditambahkan')
   }
 
   req.body.object = 'slide'
   req.body.action = 'insert'
-  req.body.msg = null
-  req.body.id = results.insertId
-  req.body.slide_id = slideId
+  req.body.message = 'insert slide success'
+  req.body.data = results
+  delete req.body.slide_name
+  delete req.body.files
+  delete req.body.url
 
   next()
 }
 
+const GetSlides = async (req, res, next) => {
+  try {
+    const [results] = await Promise.all([
+      slideModel.getSlide()
+    ])
+
+    // console.log(results)
+    req.body.object = 'slide'
+    req.body.action = 'get'
+    req.body.message = 'get all slide\'s data'
+    req.body.data = results
+    next()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 module.exports = {
-  insertSlide: AddSlide
+  insertSlide: AddSlide,
+  getSlides: GetSlides
 }

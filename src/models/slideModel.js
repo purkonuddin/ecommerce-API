@@ -24,6 +24,19 @@ const Insert = (data) => {
   })
 }
 
+const GetSlides = () => {
+  return new Promise(function (resolve, reject) {
+    db.query('SELECT * FROM ecommerce.tb_slide WHERE aktif = ?', '1', function (error, result) {
+      if (!error) {
+        resolve(result)
+      } else {
+        reject(new Error(error))
+      }
+    })
+  })
+}
+
 module.exports = {
-  insert: Insert
+  insert: Insert,
+  getSlide: GetSlides
 }

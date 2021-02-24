@@ -1,6 +1,7 @@
 const categoryModel = require('../models/categoryModel')
 const uuid = require('uuid')
 const productsModel = require('../models/productModel')
+const helpers = require('../helpers')
 
 const InsertNewCategory = async (req, res, next) => {
   const categoryId = uuid.v4()
@@ -15,18 +16,15 @@ const InsertNewCategory = async (req, res, next) => {
   ])
 
   if (results.affectedRows !== 1) {
-    return res.send({
-      object: 'category',
-      action: 'insert new category',
-      msg: 'tidak ada data yang ditambahkan'
-    })
+    helpers.customErrorResponse(res, 400, 'tidak ada data yang ditambahkan')
   }
 
   req.body.object = 'category'
   req.body.action = 'insert'
-  req.body.msg = null
+  req.body.message = 'post new categori fulfilled'
   req.body.id = results.insertId
   req.body.category_id = categoryId
+  req.body.data = results
 
   next()
 }
@@ -40,16 +38,13 @@ const DeleteCategory = async (req, res, next) => {
   //   console.log(results)
 
   if (results.affectedRows !== 1) {
-    return res.send({
-      object: 'category',
-      action: 'delete ',
-      msg: 'tidak ada data yang dihapus'
-    })
+    helpers.customErrorResponse(res, 400, 'tidak ada data yang dihapus')
   }
 
   req.body.object = 'category'
   req.body.action = 'delete, '
-  req.body.msg = `category_id ${categoryId} telah dihapus`
+  req.body.message = `delete category_id ${categoryId} fulfilled`
+  req.body.data = results
 
   next()
 }
@@ -57,12 +52,14 @@ const DeleteCategory = async (req, res, next) => {
 const RemoveImgs = (req, res, next) => {
   const categoryImage = req.body.category_image
   if (categoryImage.length <= 0) {
-    return res.send({
-      object: 'category',
-      action: 'remove images',
-      msg: `${req.body.msg}, tapi tidak ditemukan foto untuk category ini.`,
-      result: null
-    })
+    helpers.customErrorResponse(res, 400, `${req.body.msg}, tapi tidak ditemukan foto untuk category ini.`)
+
+    // return res.send({
+    //   object: 'category',
+    //   action: 'remove images',
+    //   msg: `${req.body.msg}, tapi tidak ditemukan foto untuk category ini.`,
+    //   result: null
+    // })
   }
   // remove image
   var fs = require('fs')
@@ -75,7 +72,8 @@ const RemoveImgs = (req, res, next) => {
   })
   req.body.object = 'category'
   req.body.action += 'and remove images, '
-  req.body.msg = null
+  req.body.message = 'remove categori images fulfilled'
+  req.body.data = null
   next()
 }
 
@@ -88,19 +86,20 @@ const GetCategoryById = async (req, res, next) => {
   //   console.log(results)
 
   if (results.length <= 0) {
-    return res.send({
-      object: 'category',
-      action: 'get by category_id',
-      msg: 'tidak ada data dengan category_id = ' + categoryId
-    })
+    helpers.customErrorResponse(res, 400, 'tidak ada data dengan category_id = ' + categoryId)
+
+    // return res.send({
+    //   object: 'category',
+    //   action: 'get by category_id',
+    //   msg: 'tidak ada data dengan category_id = ' + categoryId
+    // })
   }
 
   req.body.object = 'category'
   req.body.action = 'get by category_id'
-  req.body.msg = null
+  req.body.message = 'get category by category_id fulfilled'
   req.body.category_id = categoryId
-  req.body.category_name = results[0].category_name
-  req.body.category_image = results[0].category_image.split(', ')
+  req.body.data = results[0]
   next()
 }
 
@@ -112,17 +111,19 @@ const GetAllCategory = async (req, res, next) => {
   //   console.log(results)
 
   if (results.length <= 0) {
-    return res.send({
-      object: 'category',
-      action: 'get categories',
-      msg: 'tidak ada data category'
-    })
+    helpers.customErrorResponse(res, 400, 'tidak ada data category')
+
+    // return res.send({
+    //   object: 'category',
+    //   action: 'get categories',
+    //   message: 'tidak ada data category'
+    // })
   }
 
   req.body.object = 'category'
   req.body.action = 'get categories'
-  req.body.msg = null
-  req.body.category = results
+  req.body.message = 'get categories fulfilled'
+  req.body.data = results
   next()
 }
 
@@ -134,11 +135,13 @@ const CekProductByCategory = async (req, res, next) => {
 
   //   console.log(Rows[0].baris)
   if (Rows[0].baris >= 1) {
-    return req.send({
-      object: 'category',
-      action: 'remove categories',
-      msg: `category tidak bisa dihapus karna digunakan pada tb_products. Rows(${Rows[0].baris})`
-    })
+    helpers.customErrorResponse(res, 400, `category tidak bisa dihapus karna digunakan pada tb_products. Rows(${Rows[0].baris})`)
+
+    // return req.send({
+    //   object: 'category',
+    //   action: 'remove categories',
+    //   msg: `category tidak bisa dihapus karna digunakan pada tb_products. Rows(${Rows[0].baris})`
+    // })
   }
 
   next()
