@@ -1,7 +1,8 @@
 const paginate = require('express-paginate')
-const productModule = require('../models/productModel')
+const productModel = require('../models/productModel')
 const multer = require('multer')
 const fs = require('fs')
+const helpers = require('../helpers')
 
 const uploadImages = (req, res, next) => {
   const prdId = Date.now()
@@ -34,10 +35,12 @@ const uploadImages = (req, res, next) => {
   uploadFiles(req, res, err => {
     if (err instanceof multer.MulterError) {
       if (err.code === 'LIMIT_UNEXPECTED_FILE') {
-        return res.send('Too many files to upload.')
+        // return res.send('Too many files to upload.')
+        helpers.customErrorResponse(res, 400, 'Too many files to upload.')
       }
     } else if (err) {
-      return res.send(err)
+      helpers.customErrorResponse(res, 400, err)
+      // return res.send(err)
     }
 
     const images = req.files.map(image => ` ${process.env.APP_URL_UPLOADS + image.filename}`).join(',')
@@ -86,7 +89,7 @@ const InsertProduct = (req, res, next) => {
     product_size: req.body.product_size,
     product_color: req.body.product_color
   }
-  productModule.insert(dataProduct).then((result) => {
+  productModel.insert(dataProduct).then((result) => {
     // console.log(result)
     /**
      * fieldCount: 0,
@@ -101,22 +104,23 @@ const InsertProduct = (req, res, next) => {
     if (result.affectedRows === 1) {
       req.body.object = 'products'
       req.body.action = 'insert'
-      req.body.msg = `data berhasil di tambahkan, insertId: ${result.insertId}`
-
+      req.body.message = `data berhasil di tambahkan, insertId: ${result.insertId}`
+      req.body.data = result
       req.body.id = result.insertId
       req.body.product_id = dataProduct.product_id
       req.body.product_image = dataProduct.product_image.split(', ')
       req.body.product_size = dataProduct.product_size.split(', ')
       req.body.product_color = dataProduct.product_color.split(', ')
       next()
+    } else {
+      helpers.customErrorResponse(res, 400, 'tidak ada data tersimpan')
+      // return res.send({
+      //   object: 'product',
+      //   action: 'insert',
+      //   msg: 'tidak ada data tersimpan',
+      //   result: null
+      // })
     }
-
-    return res.send({
-      object: 'product',
-      action: 'insert',
-      msg: 'tidak ada data tersimpan',
-      result: null
-    })
   }).catch(err => new Error(err))
 }
 
@@ -125,7 +129,7 @@ const delProduct = (req, res, next) => {
   const productId = req.params.id
   const userStore = req.userData.user_store
   // res.send({ productId, userStore })
-  productModule.delete(productId, userStore).then((result) => {
+  productModel.delete(productId, userStore).then((result) => {
     /**
      * fieldCount: 0,
      * affectedRows: 0,
@@ -138,15 +142,16 @@ const delProduct = (req, res, next) => {
      */
 
     if (result.affectedRows === 0) {
-      return res.send({
-        object: 'product',
-        action: 'delete',
-        msg: `tidak ditemukan produk dari seller ${userStore} dengan productId ${productId}`,
-        result: null
-      })
-    }
+      helpers.customErrorResponse(res, 400, `tidak ditemukan produk dari seller ${userStore} dengan productId ${productId}`)
 
-    /**
+      // return res.send({
+      //   object: 'product',
+      //   action: 'delete',
+      //   msg: `tidak ditemukan produk dari seller ${userStore} dengan productId ${productId}`,
+      //   result: null
+      // })
+    } else {
+      /**
      * fieldCount: 0,
      * affectedRows: 1,
      * insertId: 0,
@@ -156,45 +161,51 @@ const delProduct = (req, res, next) => {
      * protocol41: true,
      * changedRows: 0
      */
-    // console.log(result)
-    req.body.object = 'products'
-    req.body.action = 'delete'
-    req.body.msg = `product dengan Id ${productId} telah dihapus.`
+      // console.log(result)
+      req.body.object = 'products'
+      req.body.action = 'delete'
+      req.body.message = `product dengan Id ${productId} telah dihapus.`
+      req.body.data = result
 
-    next()
+      next()
+    }
   }).catch(err => new Error(err))
 }
 
 const removeImgs = async (req, res, next) => {
-  const msg = req.body.msg
+  const msg = req.body.message
   const images = await req.body.images
   if (images.length <= 0) {
-    return res.send({
-      object: 'product',
-      action: 'remove images',
-      msg: `${msg}, tapi tidak ditemukan foto untuk product ini.`,
-      result: null
-    })
-  }
-  // remove image
-  await images.map(async file => {
-    const fileImage = await file.substr(file.indexOf('imgs-products/') + 14)
-    await fs.unlink(`src/assets/images/products/${fileImage}`, function (err) {
-      if (err) {
-        /**
-         * [Error: ENOENT: no such file or directory, unlink 'D:\upgrading1\resthub\src\assets\images\upload\host:8080\imgs\1601064041495-icecreambanansplit.png'] {
-         * errno: -4058,
-         * code: 'ENOENT',
-         * syscall: 'unlink',
-         * path: 'D:\\upgrading1\\resthub\\src\\assets\\images\\upload\\host:8080\\imgs\\1601064041495-icecreambanansplit.png'
-         * }
-         */
-        return res.send({ err: err })
-      }
-    })
-  })
+    helpers.customErrorResponse(res, 200, `${msg}, tapi tidak ditemukan foto untuk product ini.`)
 
-  next()
+    // return res.send({
+    //   object: 'product',
+    //   action: 'remove images',
+    //   msg: `${msg}, tapi tidak ditemukan foto untuk product ini.`,
+    //   result: null
+    // })
+  } else {
+    // remove image
+    await images.map(async file => {
+      const fileImage = await file.substr(file.indexOf('imgs-products/') + 14)
+      await fs.unlink(`src/assets/images/products/${fileImage}`, function (err) {
+        if (err) {
+          /**
+           * [Error: ENOENT: no such file or directory, unlink 'D:\upgrading1\resthub\src\assets\images\upload\host:8080\imgs\1601064041495-icecreambanansplit.png'] {
+           * errno: -4058,
+           * code: 'ENOENT',
+           * syscall: 'unlink',
+           * path: 'D:\\upgrading1\\resthub\\src\\assets\\images\\upload\\host:8080\\imgs\\1601064041495-icecreambanansplit.png'
+           * }
+           */
+          // return res.send({ err: err })
+          helpers.customErrorResponse(res, 400, err)
+        }
+      })
+    })
+
+    next()
+  }
 }
 
 const editProduct = (req, res, next) => {
@@ -214,20 +225,16 @@ const editProduct = (req, res, next) => {
     product_color: req.body.product_color
   }
   // console.log(editdata)
-  productModule.update(editdata, req.params.id, req.userData.user_store).then((result) => {
+  productModel.update(editdata, req.params.id, req.userData.user_store).then((result) => {
     if (result.changedRows === 0) {
-      return res.send({
-        object: 'product',
-        action: 'update by product_id',
-        msg: `Tidak ada data yang di update, product dengan id ${req.params.id}!`,
-        result: null
-      })
+      helpers.customErrorResponse(res, 400, `Tidak ada data yang di update, product dengan id ${req.params.id}!`)
+    } else {
+      req.body.object = 'products'
+      req.body.action = 'update by product_id'
+      req.body.message = `selesai di update, product id ${req.params.id}!`
+      req.body.data = result
+      next()
     }
-
-    req.body.object = 'products'
-    req.body.action = 'update by product_id'
-    req.body.msg = `selesai di update, product id ${req.params.id}!`
-    next()
   }).catch(err => new Error(err))
 }
 
@@ -235,40 +242,35 @@ const getProdById = async (req, res, next) => {
   const productId = req.body.product_id || req.params.id
   console.log(productId)
   const [result] = await Promise.all([
-    productModule.getbyid(productId)
+    productModel.getbyid(productId)
   ])
 
   if (result.length === 0) {
-    return res.send({
-      object: 'product',
-      action: 'select by product_id',
-      msg: `tidak ditemukan product dengan id ${productId}`,
-      result: null
-    })
+    helpers.customErrorResponse(res, 400, `tidak ditemukan product dengan id ${productId}`)
+  } else {
+    req.body.object = 'products'
+    req.body.action = 'select by product_id'
+    req.body.message = null
+    req.body.id = result[0].id
+    req.body.product_id = result[0].product_id
+    req.body.product_name = result[0].product_name
+    req.body.product_description = result[0].product_description
+    req.body.images = await result[0].product_image.split(', ')
+    req.body.product_category = result[0].product_category
+    req.body.product_price = result[0].product_price
+    req.body.disc = result[0].disc
+    req.body.price_aft_disc = result[0].price_aft_disc
+    req.body.product_stock = result[0].product_stock
+    req.body.seller = result[0].seller
+    req.body.product_rating = result[0].product_rating
+    req.body.product_condition = result[0].product_condition
+    req.body.product_size = await result[0].product_size.split(', ')
+    req.body.product_color = await result[0].product_color.split(', ')
+    req.body.added_at = result[0].added_at
+    req.body.updated_at = result[0].updated_at
+    req.body.data = {}
+    next()
   }
-
-  req.body.object = 'products'
-  req.body.action = 'select by product_id'
-  req.body.msg = null
-  req.body.id = result[0].id
-  req.body.product_id = result[0].product_id
-  req.body.product_name = result[0].product_name
-  req.body.product_description = result[0].product_description
-  req.body.images = await result[0].product_image.split(', ')
-  req.body.product_category = result[0].product_category
-  req.body.product_price = result[0].product_price
-  req.body.disc = result[0].disc
-  req.body.price_aft_disc = result[0].price_aft_disc
-  req.body.product_stock = result[0].product_stock
-  req.body.seller = result[0].seller
-  req.body.product_rating = result[0].product_rating
-  req.body.product_condition = result[0].product_condition
-  req.body.product_size = await result[0].product_size.split(', ')
-  req.body.product_color = await result[0].product_color.split(', ')
-  req.body.added_at = result[0].added_at
-  req.body.updated_at = result[0].updated_at
-
-  next()
 }
 
 const Sort = async (req, res, next) => {
@@ -324,13 +326,16 @@ const Sort = async (req, res, next) => {
   const paging = `LIMIT ${page + ', ' + perpage}`
   const sorting = `ORDER BY ${orderBy} ${ascDesc}`
 
-  const strQry = `SELECT * FROM tb_products${whereParams} ${sorting} ${paging}`
-  const strQryRows = `SELECT COUNT(*) AS baris FROM tb_products${whereParams}`
+  const strQry = `SELECT * FROM ecommerce.tb_products${whereParams} ${sorting} ${paging}`
+  const strQryRows = `SELECT COUNT(*) AS baris FROM ecommerce.tb_products${whereParams}`
   // console.log(strQry)
   const [results, rows] = await Promise.all([
-    productModule.sort(strQry),
-    productModule.Rows(strQryRows)
+    productModel.sort(strQry),
+    productModel.Rows(strQryRows)
   ])
+
+  console.log('@results: ', results)
+  console.log('@rows: ', rows)
 
   const totalrows = rows[0].baris
   const pageCount = Math.ceil(totalrows / req.query.limit)
@@ -355,21 +360,54 @@ const ReduceStock = async (req, res, next) => {
   const cartQty = req.body.qty
   const productId = req.body.product_id
   const [updateStock] = await Promise.all([
-    productModule.reduceStock(cartQty, productId)
+    productModel.reduceStock(cartQty, productId)
   ])
 
   if (updateStock.changedRows === 0) {
-    return res.send({
-      object: 'product',
-      action: 'update stock',
-      msg: `Tidak ada data yang di update, product dengan id ${req.body.product_id}!`,
-      result: null
-    })
+    helpers.customErrorResponse(res, 400, `Tidak ada data yang di update, product dengan id ${req.body.product_id}!`)
+
+    // return res.send({
+    //   object: 'product',
+    //   action: 'update stock',
+    //   msg: `Tidak ada data yang di update, product dengan id ${req.body.product_id}!`,
+    //   result: null
+    // })
+  } else {
+    req.body.message = `product Id ${req.body.product_id} telah di reduce`
+    req.body.data = updateStock
+    next()
   }
+}
 
-  req.body.msg = `product Id ${req.body.product_id} telah di reduce`
+const GetAll = async (req, res, next) => {
+  try {
+    const category = req.query.category || ''
+    const limit = req.query.limit || 777
+    const activePage = req.query.page || 1
+    const searchName = req.query.name || ''
+    const sortBy = req.query.sortBy || 'product_price'
+    const sort = req.query.sort || 'ASC'
+    const pagination = {
+      activePage,
+      limit,
+      sortBy,
+      sort
+    }
 
-  next()
+    const totalData = await productModel.countData(searchName, category)
+    const totalPages = Math.ceil(totalData / limit)
+    const pager = {
+      totalPages
+    }
+    const result = await productModel.getAll(searchName, pagination, category)
+
+    helpers.customResponse(res, 200, result, pager)
+    // req.body.data = result
+    // next()
+  } catch (error) {
+    // console.log(error);
+    helpers.customErrorResponse(res, 400, error)
+  }
 }
 
 module.exports = {
@@ -380,5 +418,6 @@ module.exports = {
   patch: editProduct,
   getById: getProdById,
   sortProducts: Sort,
-  reduceStock: ReduceStock
+  reduceStock: ReduceStock,
+  getAll: GetAll
 }

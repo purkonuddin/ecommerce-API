@@ -43,7 +43,7 @@ const MultipleImages = (req, res, next) => {
       // var extFile = path.extname(file.originalname)
       // var basename = file.originalname.replace(`'${extFile}'`, '')
 
-      var myfileName = originalUrl[2] === 'user' ? '.jpeg' : file.originalname
+      var myfileName = originalUrl[2] === 'user' ? '.jpeg' : file.originalname.replace(/\s/g, '')
       /**
        * imgs-category/ctgry-icin-4-200x200.png
        * imgs-users/844a3945-314b-4385-932c-e57e30f8abfa-mrscoronavirus.jpeg
