@@ -334,12 +334,23 @@ const Sort = async (req, res, next) => {
     productModel.Rows(strQryRows)
   ])
 
-  console.log('@results: ', results)
-  console.log('@rows: ', rows)
+  results.forEach(element => {
+    if (element.product_size) {
+      element.product_size = element.product_size.split(', ')
+    }
 
+    if (element.product_image) {
+      element.product_image = element.product_image.split(', ')
+    }
+
+    if (element.product_color) {
+      element.product_color = element.product_color.split(', ')
+    }
+  })
   const totalrows = rows[0].baris
   const pageCount = Math.ceil(totalrows / req.query.limit)
-
+  console.log('@results: ', results)
+  console.log('@rows: ', rows)
   req.body.object = 'products'
   req.body.has_more = paginate.hasNextPages(req)(pageCount)
   req.body.total_page = pageCount
