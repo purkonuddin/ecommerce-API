@@ -4,7 +4,7 @@
       "version": "1.0.0",
       "description": "This is an implementation of how to use RESTful API's using SWAGGER"
     },
-    "host": "3.92.225.2:8001/api/v1",
+    "host": "localhost:8001/api/v1",
     "basePath": "/",
     "swagger": "2.0",
     "paths": {
@@ -20,7 +20,7 @@
       },
       "/user": {
         "get": {
-          "description": "User's data",
+          "description": "<p>Get user's data:</p> <div><code> const headers= {<br/>authorization: \"Bearer (token)\"<br/>}</code></div>",
           "tags": ["Users"],
           "produces": ["application/json"],
           "parameters": [
@@ -41,7 +41,7 @@
       },
       "/user/sign-up": {
         "post": {
-          "description": "Registration new user",
+          "description": "<p>Create new user:</p> <div><p>Sign up as seller:</p> <code>const body = { <br/> account_type: \"seller\",<br/>   username: string - (unique), <br/>   useremail: string - (unique), <br/>   user_phone: numeric - (use [1-9], max 13 character),<br/>userstore: string - (unique)<br/>password: string - (use min 1 Uppercase, min 1 Numeric, and min 6 character)<br/>}</code></div> <div><p>Sign up as customer:</p> <code>const body = { <br/> account_type: \"customer\"<br/>   username: string - (unique), <br/>   useremail: string - (unique),  <br/>password: string - (use min 1 Uppercase, min 1 Numeric, and min 6 character)<br/>}</code></div><div><p>note:. use active email. the service will send email verification to your mail, and use it to activat your account</p></div>",
           "tags": ["Users"],
           "produces": ["application/json"],
           "parameters": [
@@ -53,9 +53,6 @@
             },
             {
               "$ref": "#/parameters/password"
-            },
-            {
-              "$ref": "#/parameters/password_repeat"
             }, 
             {
               "$ref": "#/parameters/useremail"
@@ -80,10 +77,13 @@
       },
       "/user/login": {  
         "post": {
-            "description": "Login to the application",
+            "description": "<p>Login to the application</p> <code>const body = { <br/>   login_account_type: enum[seller, customer], <br/>   login_email: string - (use valid email), <br/>   login_password: string - (use [A-Z, a-z, 0-9], min 6 character)<br/>}</code>",
             "tags": ["Users"],
             "produces": ["application/json"],
             "parameters": [
+              {
+                "$ref": "#/parameters/login_account_type"
+              },
               {
                 "$ref": "#/parameters/login_email"
               },
@@ -602,6 +602,124 @@
             }
           }
         }
+      },
+      "/ongkir/provinsi":{
+        "get":{
+          "description": "Ongkir",
+          "tags": ["Ongkir"],
+          "produces": ["application/json"],
+          "parameters": [],
+          "responses": {
+            "200": {
+              "description": "Ongkir"
+            },
+            "400":{
+              "description": "invalid falue"
+            }
+          }
+        }
+      },
+      "/ongkir/kota/:id":{
+        "get":{
+          "description": "Ongkir",
+          "tags": ["Ongkir"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema":{
+                "type": "integer",
+                "minimum":1
+              }
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "Ongkir"
+            },
+            "400":{
+              "description": "invalid falue"
+            }
+          }
+        }
+      },
+      "/ongkir/cost":{
+        "post":{
+          "description": "Ongkir",
+          "tags": ["Ongkir"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "name": "origin",
+              "description": "origin",
+              "in": "formData",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "destination",
+              "description": "destination",
+              "in": "formData",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "weight",
+              "description": "weight",
+              "in": "formData",
+              "required": true,
+              "type": "numeric"
+            },
+            {
+              "name": "courier",
+              "description": "courier",
+              "in": "formData",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Ongkir"
+            },
+            "400":{
+              "description": "invalid falue"
+            }
+          }
+        }
+      },
+      "/payment":{
+        "post":{
+          "description": "Payment",
+          "tags": ["Payment"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "name": "gross_amount",
+              "description": "gross amount",
+              "in": "formData",
+              "required": true,
+              "type": "numeric"
+            },
+            {
+              "name": "order_id",
+              "description": "order id",
+              "in": "formData",
+              "required": true,
+              "type": "string"
+            } 
+          ],
+          "responses": {
+            "200": {
+              "description": "Payment"
+            },
+            "400":{
+              "description": "invalid falue"
+            }
+          }
+        }
       }
     },
     "definitions": { 
@@ -641,8 +759,8 @@
         }
       },
       "Login": {
-        "required": ["login_email", "login_password"],
-        "properties": {
+        "required": ["login_account_type", "login_email", "login_password"],
+        "properties": { 
           "login_email": {
             "type": "string"
           },
@@ -747,21 +865,21 @@
     "parameters": {  
       "account_type": {
         "name": "account_type",
-        "description": "account_type.",
+        "description": "enum[seller, customer]",
         "in": "formData",
         "required": false,
         "type": "string"
       },
       "username": {
         "name": "username",
-        "description": "Username to use for login.",
+        "description": "string - (unique)",
         "in": "formData",
         "required": true,
         "type": "string"
       },
       "password": {
         "name": "password",
-        "description": "Password ",
+        "description": "string - (use min 1 uppercase, 1 number, and min 6 character",
         "in": "formData",
         "required": true,
         "type": "string"
@@ -774,11 +892,11 @@
         "type": "string"
       },
       "userphone": {
-        "name": "userphone",
-        "description": "phone number",
+        "name": "user_phone",
+        "description": "numeric - exp:. 8xxxx... max 13 character",
         "in": "formData",
-        "required": true,
-        "type": "string"
+        "required": false,
+        "type": "numeric"
       },
       "useremail":{
         "name": "useremail",
@@ -789,7 +907,7 @@
       }, 
       "userstore":{
         "name": "userstore",
-        "description": "user's store",
+        "description": "string - (unique) min 3 character",
         "in": "formData",
         "required": false,
         "type": "string"
@@ -808,16 +926,23 @@
         "required": true,
         "type": "string"
       },
+      "login_account_type":{
+        "name": "login_account_type",
+        "description": "enum[seller, customer]",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
       "login_email": {
         "name": "login_email",
-        "description": "login_email",
+        "description": "use valid email",
         "in": "formData",
         "required": true,
         "type": "string"
       },
       "login_password": {
         "name": "login_password",
-        "description": "login_password",
+        "description": "use [A-Z, a-z, 0-9] min 6 char",
         "in": "formData",
         "required": true,
         "type": "string"
@@ -1201,6 +1326,14 @@
       {
         "name": "Slide",
         "description": "Slide"
+      },
+      {
+        "name": "Ongkir",
+        "description": "Raja ongkir"
+      },
+      {
+        "name": "Payment",
+        "description": "Midtrans service"
       }
     ]
   }
