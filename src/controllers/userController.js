@@ -347,13 +347,13 @@ const InsertAddress = async (req, res, next) => {
       customer_id: userId,
       address: req.body.address,
       primary_address: req.body.primary_address,
-      city_id: req.body.city_id,
-      province_id: req.body.province_id,
-      city_name: req.body.city_name,
-      province_name: req.body.province_name,
-      recipient_name: req.body.recipient_name,
-      recipient_phone_number: req.body.recipient_phone_number,
-      postal_code: req.body.postal_code
+      city_id: req.body.city_id || null,
+      province_id: req.body.province_id || null,
+      city_name: req.body.city_name || null,
+      province_name: req.body.province_name || null,
+      recipient_name: req.body.recipient_name || null,
+      recipient_phone_number: req.body.recipient_phone_number || null,
+      postal_code: req.body.postal_code || null
     }
 
     const [insertAddress] = await Promise.all([

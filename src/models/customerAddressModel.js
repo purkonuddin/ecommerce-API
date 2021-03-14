@@ -12,11 +12,11 @@ const InsertAddress = (data) => {
         province_name,
         recipient_name,
         recipient_phone_number,
-        postal_code,
+        postal_code
         ) VALUES (
             '${data.customer_id}',
             '${data.address}',
-            '${data.primary_address}'
+            '${data.primary_address}',
             '${data.city_id}',
             '${data.province_id}',
             '${data.city_name}',
