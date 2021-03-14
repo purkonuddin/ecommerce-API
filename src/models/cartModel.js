@@ -18,7 +18,8 @@ const Insert = (data) => {
             disc, 
             price_aft_disc, 
             subtotal, 
-            sts_items
+            sts_items,
+            product_image
             ) VALUES ( 
                 '${data.member_id}',
                 '${data.product_id}',
@@ -33,7 +34,8 @@ const Insert = (data) => {
                 '${data.disc}',
                 '${data.price_aft_disc}',
                 '${data.subtotal}',
-                '${data.sts_items}'
+                '${data.sts_items}',
+                '${data.product_image}'
             )`, (error, result) => {
       if (!error) {
         resolve(result)
@@ -55,7 +57,7 @@ const updateStsItems = (data) => {
   })
 }
 
-const GetItemWithStsOrder = (data) => {
+const getItemWithStsOrder = (data) => {
   return new Promise(function (resolve, reject) {
     db.query(`SELECT * FROM ecommerce.tb_cart WHERE member_id ='${data.member_id}' AND sts_items = '${data.sts_items}'`, function (error, result) {
       if (!error) {
@@ -86,6 +88,6 @@ module.exports = {
   updateStsItems: updateStsItems,
   update: Update,
   delete: Delete,
-  getItemWithStsOrder: GetItemWithStsOrder,
+  getItemWithStsOrder: getItemWithStsOrder,
   deleteCartWithStsOrder: DeleteCartWithStsOrder
 }

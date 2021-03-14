@@ -240,7 +240,6 @@ const editProduct = (req, res, next) => {
 
 const getProdById = async (req, res, next) => {
   const productId = req.body.product_id || req.params.id
-  console.log(productId)
   const [result] = await Promise.all([
     productModel.getbyid(productId)
   ])
@@ -248,27 +247,33 @@ const getProdById = async (req, res, next) => {
   if (result.length === 0) {
     helpers.customErrorResponse(res, 400, `tidak ditemukan product dengan id ${productId}`)
   } else {
+    result.forEach(element => {
+      if (element.product_size) {
+        element.product_size = element.product_size.split(', ')
+      }
+
+      if (element.product_image) {
+        element.product_image = element.product_image.split(', ')
+      }
+
+      if (element.product_color) {
+        element.product_color = element.product_color.split(', ')
+      }
+    })
+    console.log(result[0])
+
     req.body.object = 'products'
     req.body.action = 'select by product_id'
-    req.body.message = null
-    req.body.id = result[0].id
-    req.body.product_id = result[0].product_id
+    req.body.message = 'fulfilled'
+    req.body.result = result
+    // data to addtocart
+    req.body.product_image = result[0].product_image[0]
     req.body.product_name = result[0].product_name
-    req.body.product_description = result[0].product_description
-    req.body.images = await result[0].product_image.split(', ')
     req.body.product_category = result[0].product_category
+    req.body.seller = result[0].seller
     req.body.product_price = result[0].product_price
     req.body.disc = result[0].disc
-    req.body.price_aft_disc = result[0].price_aft_disc
-    req.body.product_stock = result[0].product_stock
-    req.body.seller = result[0].seller
-    req.body.product_rating = result[0].product_rating
-    req.body.product_condition = result[0].product_condition
-    req.body.product_size = await result[0].product_size.split(', ')
-    req.body.product_color = await result[0].product_color.split(', ')
-    req.body.added_at = result[0].added_at
-    req.body.updated_at = result[0].updated_at
-    req.body.data = {}
+    req.body.price_aft_disc = result[0].product_price - ((result[0].disc * result[0].product_price) / 100)
     next()
   }
 }

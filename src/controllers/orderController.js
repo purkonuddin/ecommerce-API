@@ -1,6 +1,7 @@
 const orderModel = require('../models/orderModel')
 const productModel = require('../models/productModel')
 const cartModel = require('../models/cartModel')
+const helpers = require('../helpers')
 
 const CekStock = (req, res, next) => {
   productModel.getbyid(req.body.product_id).then((result) => {
@@ -25,7 +26,8 @@ const CekStock = (req, res, next) => {
 
 const InsertOrder = (req, res, next) => {
   if (req.body.product_stock < 1) {
-    return res.send({ msg: 'Stock tidak tersedia!' })
+    // return res.send({ msg: 'Stock tidak tersedia!' })
+    helpers.customErrorResponse(res, 400, 'Stock tidak tersedia!')
   }
   const dataToOrderDetail = {
     order_number: req.query.order_number,
@@ -45,14 +47,15 @@ const InsertOrder = (req, res, next) => {
   }
   orderModel.insertToOrderDetail(dataToOrderDetail).then((result) => {
     if (!result) {
-      return res.send({ error: 'kunaon eta error!' })
+      // return res.send({ error: 'kunaon eta error!' })
+      helpers.customErrorResponse(res, 400, 'insert to oreder detail rejected')
     }
     req.body.total_price = dataToOrderDetail.subtotal
     next()
   }).catch(err => new Error(err))
 }
 
-const Create = (req, res, next) => {
+const Create = async (req, res, next) => {
   // console.log(req.query.order_number)
   orderModel.cekIdOrder(req.query.order_number).then((result) => {
     // req.body.order_date
@@ -89,10 +92,17 @@ const Create = (req, res, next) => {
     if (result.length <= 0) {
       // create new order detail
       orderModel.insertOrder(dataOrder).then((resultA) => {
+        // console.log('@insertOrder', resultA)
         if (!resultA) {
-          return res.status(501).send({ msg: 'error' })
+          // return res.status(501).send({ msg: 'error' })
+          helpers.customErrorResponse(res, 501, 'insert to order rejected')
         }
-        res.send({ msg: 'create new order detail', resultA })
+        // res.send({ msg: 'create new order detail', resultA })
+        const data = {
+          message: 'create new order detail is fulfilled',
+          result: resultA
+        }
+        helpers.response(res, 200, data)
       }).catch(err => new Error(err))
     }
     // // update order detail
@@ -103,7 +113,12 @@ const Create = (req, res, next) => {
     }
 
     orderModel.updateOrder(updateTotalPrice, req.query.order_number).then((resultB) => {
-      res.send({ msg: 'updated', result: resultB })
+      // res.send({ msg: 'updated', result: resultB })
+      const data = {
+        message: 'update order detail is fulfilled',
+        result: resultB
+      }
+      helpers.response(res, 200, data)
     }).then(err => new Error(err))
   }).catch(err => new Error(err))
 }
@@ -143,14 +158,20 @@ const InserToOrderTable = async (req, res, next) => {
   ])
 
   if (results.affectedRows !== 1) {
-    return res.send({
+    // return res.send({
+    //   object: 'create order',
+    //   action: 'insert',
+    //   message: 'insert to order is rejected'
+    // })
+    const data = {
       object: 'create order',
       action: 'insert',
-      msg: 'tidak ada data yang ditambahkan'
-    })
+      message: 'insert to order is rejected'
+    }
+    helpers.customErrorResponse(res, 400, data)
   }
 
-  req.body.msg = `order id ${orderId} telah dibuat`
+  req.body.message = `insert data with id order: ${orderId} is fulfilled`
 
   next()
 }
@@ -167,7 +188,11 @@ const GetCartWithStsOrderAndInsertToListOrder = async (req, res, next) => {
   ])
 
   if (myCart.length <= 0) {
-    return res.send({ msg: `tidak ada data di keranjang dengan userId ${userId} dan status item order` })
+    // return res.send({ msg: `tidak ada data di keranjang dengan userId ${userId} dan status item order` })
+    const data = {
+      message: `tidak ada data di keranjang dengan userId ${userId} dan status item order`
+    }
+    helpers.customErrorResponse(res, 400, data)
   }
 
   // simpan data tb_cart dengan status-item 'order' ke tabel order_detail
@@ -208,7 +233,7 @@ const GetCartWithStsOrderAndInsertToListOrder = async (req, res, next) => {
     ])
 
     if (insResult.affectedRows !== 1) {
-      console.log('gagal disimpan')
+      console.log(`${dataOrderDetail.product_id} gagal disimpan`)
     }
 
     const dataToDelCart = {

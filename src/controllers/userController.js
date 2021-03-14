@@ -358,9 +358,10 @@ const InsertAddress = async (req, res, next) => {
     } else {
       req.body.object = 'customer_address'
       req.body.action = 'insert'
-      req.body.msg = null
+      req.body.message = 'post new user\'s address is fulfilled'
       req.body.id = insertAddress.insertId
       req.body.user_id = userId
+      req.body.result = insertAddress
 
       next()
     }
@@ -378,12 +379,12 @@ const GetAllCustomerAddress = async (req, res, next) => {
     ])
 
     if (address.length <= 0) {
-      helpers.customErrorResponse(res, 400, 'tidak ada data yang ditambahkan')
+      helpers.customErrorResponse(res, 400, 'belum ada alamat rumah yang ditambahkan')
     } else {
       req.body.object = 'customer_address'
       req.body.action = 'get my address'
-      req.body.msg = null
-      req.body.customer_address = address
+      req.body.message = 'get user\' address is fulfilled'
+      req.body.result = address
 
       next()
     }
