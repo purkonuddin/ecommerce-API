@@ -193,6 +193,48 @@
               "$ref": "#/parameters/address"
             },{
               "$ref": "#/parameters/primary_address"
+            },{
+              "name": "city_id",
+              "description": "city_id - based on raja ongkir's data",
+              "in": "formData",
+              "required": false,
+              "type": "numeric"
+            },{
+              "name": "province_id",
+              "description": "province id - based on raja ongkir's data",
+              "in": "formData",
+              "required": false,
+              "type": "numeric"
+            },{
+              "name": "city_name",
+              "description": "city name - based on raja ongkir's data",
+              "in": "formData",
+              "required": false,
+              "type": "numeric"
+            },{
+              "name": "province_name",
+              "description": "province name - based on raja ongkir's data",
+              "in": "formData",
+              "required": false,
+              "type": "numeric"
+            },{
+              "name": "recipient_name",
+              "description": "recipient name ",
+              "in": "formData",
+              "required": false,
+              "type": "string"
+            },{
+              "name": "recipient_phone_number",
+              "description": "recipient phone number ",
+              "in": "formData",
+              "required": false,
+              "type": "string"
+            },{
+              "name": "postal_code",
+              "description": "postal code",
+              "in": "formData",
+              "required": false,
+              "type": "numeric"
             }
           ],
           "responses": {
@@ -872,6 +914,13 @@
       },
       "username": {
         "name": "username",
+        "description": "string - (unique)",
+        "in": "formData",
+        "required": true,
+        "type": "string"
+      },
+      "user_name": {
+        "name": "user_name",
         "description": "string - (unique)",
         "in": "formData",
         "required": true,

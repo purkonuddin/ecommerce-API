@@ -17,7 +17,7 @@ router.route('/logout').get(userMiddleware.isLoggedIn, userController.logout, se
 router.route('/sign-up').post(userMiddleware.validateSignup, userController.signUp, SendEmail, sendResponse)
 router.route('/verifikasi-email/:token').get(userController.verifikasiEmail, sendResponse)
 router.route('/customer-address')
-  .post(userMiddleware.isLoggedIn, userController.insertAddress, sendResponse)
+  .post(userMiddleware.isLoggedIn, userMiddleware.validateUserAddress, userController.insertAddress, sendResponse)
   .get(userMiddleware.isLoggedIn, userController.getAllCustomerAddress, sendResponse)
 //   .delete()
 module.exports = router

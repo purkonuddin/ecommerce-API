@@ -5,11 +5,25 @@ const InsertAddress = (data) => {
     db.query(`INSERT INTO ecommerce.tb_customer_address(
         customer_id,
         address,
-        primary_address
+        primary_address,
+        city_id,
+        province_id,
+        city_name,
+        province_name,
+        recipient_name,
+        recipient_phone_number,
+        postal_code,
         ) VALUES (
             '${data.customer_id}',
             '${data.address}',
             '${data.primary_address}'
+            '${data.city_id}',
+            '${data.province_id}',
+            '${data.city_name}',
+            '${data.province_name}',
+            '${data.recipient_name}',
+            '${data.recipient_phone_number}',
+            '${data.postal_code}'
         )`, (error, result) => {
       if (!error) {
         resolve(result)

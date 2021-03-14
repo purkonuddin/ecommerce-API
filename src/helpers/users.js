@@ -142,6 +142,24 @@ const validateEmail = (req, res, next) => {
   }
 }
 
+const validateUserAddress = (req, res, next) => {
+  try {
+    if (!req.body.address) {
+      helpers.customErrorResponse(res, 400, 'Please fillout the address')
+    } else if (!req.body.primary_address) {
+      helpers.customErrorResponse(res, 400, 'Please fillout the primary_address')
+    } else if (!req.body.city_id) {
+      helpers.customErrorResponse(res, 400, 'Please fillout the city_id')
+    } else if (!req.body.province_id) {
+      helpers.customErrorResponse(res, 400, 'Please fillout the province_id')
+    } else {
+      next()
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 module.exports = {
   validasiFormEditProfile: ValidasiFormEditProfile,
   isSeller: isSeller,
@@ -149,5 +167,6 @@ module.exports = {
   isLoggedIn: isLoggedIn,
   validateLogin: validateLogin,
   validateSignup: validateSignup,
-  validateEmail: validateEmail
+  validateEmail: validateEmail,
+  validateUserAddress: validateUserAddress
 }
