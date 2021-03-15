@@ -4,7 +4,7 @@
       "version": "1.0.0",
       "description": "This is an implementation of how to use RESTful API's using SWAGGER"
     },
-    "host": "localhost:8001/api/v1",
+    "host": "3.92.225.2:8001/api/v1",
     "basePath": "/",
     "swagger": "2.0",
     "paths": {
