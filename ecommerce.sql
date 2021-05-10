@@ -60,11 +60,18 @@ INSERT INTO `tb_categories` (`id`, `category_id`, `category_name`, `category_ima
 --
 
 CREATE TABLE `ecommerce`.`tb_customer_address` (
-  `id` int AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  `id` int AUTO_INCREMENT PRIMARY KEY NOT NULL, 
   `customer_id` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
-  `primary_address` enum('true','false') NOT NULL DEFAULT 'false'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `primary_address` enum('true','false') NOT NULL DEFAULT 'false',
+  `city_id` int(255) DEFAULT NULL,
+  `province_id` int(255) DEFAULT NULL,
+  `city_name` varchar(255) NOT NULL,
+  `province_name` varchar(255) NOT NULL,
+  `recipient_name` varchar(255) NOT NULL,
+  `recipient_phone_number` varchar(255) NOT NULL,
+  `postal_code` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;tb_user
 
 --
 -- Dumping data untuk tabel `tb_customer_address`
