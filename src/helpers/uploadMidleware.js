@@ -1,6 +1,55 @@
 const multer = require('multer')
 // const path = require('path')
 
+const SingleImage = (req, res, next) => {
+  const regExp = /[^A-Za-z0-9]/g
+  const userId = req.userData.user_id
+  const userName = req.userData.user_name.toLowerCase().replace(regExp, '')
+  const object = {
+    directory: 'src/assets/images/users',
+    prefix: `${userId}-${userName}`,
+    fileUrl: process.env.APP_URL_PROFILE,
+    currentImages: req.body.myprofile[0].user_image
+  }
+
+  const multerStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, `${object.directory}`)
+    },
+    filename: function (req, file, cb) {
+      var myfileName = '.jpeg'
+      cb(null, `${object.prefix}-${myfileName}`)
+    }
+  })
+
+  const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image')) {
+      cb(null, true)
+    } else {
+      cb(null, false)
+    }
+  }
+
+  const upload = multer({ storage: multerStorage, fileFilter: multerFilter })
+  const uploadFiles = upload.single('image')
+  uploadFiles(req, res, err => {
+    if (err) {
+      return res.send(err)
+    }
+    // console.log('adfasf=> ', `${req.file}`)
+    let image = ''
+    if (req.file === undefined) {
+      image = object.currentImages
+    } else {
+      image = `${object.fileUrl + req.file.filename}`
+    }
+    req.body.file = image
+    req.body.file_prefix = object.prefix
+
+    next()
+  })
+}
+
 const MultipleImages = (req, res, next) => {
   var dateNow = Date.now()
   const regExp = /[^A-Za-z0-9]/g
@@ -94,5 +143,6 @@ const MultipleImages = (req, res, next) => {
 }
 
 module.exports = {
-  uploadMidleware: MultipleImages
+  uploadMidleware: MultipleImages,
+  singleUploadMidleware: SingleImage
 }

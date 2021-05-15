@@ -57,6 +57,9 @@ const LoginRev = async (req, res, next) => {
             req.body.user_image = results[0].user_image
             req.body.token = token
             req.body.user_email = results[0].user_email
+            req.body.user_phone = results[0].user_phone
+            req.body.gender = results[0].gender
+            req.body.date_of_birth = results[0].date_of_birth
             delete req.body.login_password
             delete req.body.windowWidth
             delete req.body.isSentResetPassword
@@ -317,13 +320,14 @@ const EditProfile = async (req, res, next) => {
   try {
     const userId = req.userData.user_id
     const dataUser = {
-      user_name: req.body.user_name,
-      user_email: req.body.user_email,
+      // user_name: req.body.user_name,
+      // user_email: req.body.user_email,
       user_phone: req.body.user_phone,
       gender: req.body.gender,
       date_of_birth: req.body.date_of_birth,
-      user_image: req.body.files
+      user_image: req.body.file
     }
+    console.log('==>> ', dataUser, userId)
     const [results] = await Promise.all([
       userModel.updateProfile(dataUser, userId)
     ])
@@ -345,6 +349,7 @@ const InsertAddress = async (req, res, next) => {
     const userId = req.userData.user_id
     const dataAddress = {
       customer_id: userId,
+      save_address_as: req.body.save_address_as,
       address: req.body.address,
       primary_address: req.body.primary_address,
       city_id: req.body.city_id || null,

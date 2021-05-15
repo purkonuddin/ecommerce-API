@@ -4,6 +4,7 @@ const InsertAddress = (data) => {
   return new Promise((resolve, reject) => {
     db.query(`INSERT INTO ecommerce.tb_customer_address(
         customer_id,
+        save_address_as,
         address,
         primary_address,
         city_id,
@@ -15,6 +16,7 @@ const InsertAddress = (data) => {
         postal_code
         ) VALUES (
             '${data.customer_id}',
+            '${data.save_address_as}',
             '${data.address}',
             '${data.primary_address}',
             '${data.city_id}',

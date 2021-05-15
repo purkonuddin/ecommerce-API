@@ -65,7 +65,7 @@ const isLoggedIn = (req, res, next) => {
     req.userData = decoded
     next()
   } catch (err) {
-    helpers.customErrorResponse(res, 400, 'Your session is not valid!')
+    helpers.customErrorResponse(res, 400, `Your session is not valid!${''}`)
   }
 }
 
@@ -143,6 +143,7 @@ const validateEmail = (req, res, next) => {
 }
 
 const validateUserAddress = (req, res, next) => {
+  console.log(req.body)
   try {
     if (!req.body.address) {
       helpers.customErrorResponse(res, 400, 'Please fillout the address')
