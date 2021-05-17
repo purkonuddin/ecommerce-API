@@ -27,7 +27,30 @@ SET time_zone = "+00:00";
 -- Struktur dari tabel `tb_cart`
 --
 
- 
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `tb_store`
+--
+
+CREATE TABLE `ecommerce`.`tb_store` (
+  `id` int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(255) NOT NULL,
+  `store_name` varchar(60) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone_number` varchar(255) NULL,
+  `store_description` text NULL,
+  `created_at` datetime NULL,
+  `updated_at` datetime NULL,
+  UNIQUE KEY `idx_user_id` (`user_id`),
+  UNIQUE KEY `idx_store_name` (`store_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
+
+--
+-- Dumping data untuk tabel `tb_categories`
+--
+
+
 -- --------------------------------------------------------
 
 --
