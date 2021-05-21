@@ -125,10 +125,10 @@ const UpdateProfile = (data, userId) => {
 
 const GetMyProfile = (userId, action) => {
   const originalUrl = action
-  const strQueryA = `SELECT user_name, user_email, user_phone, gender,date_of_birth ,a.address AS primary_address, user_store, user_image, account_type FROM ecommerce.tb_user u, ecommerce.tb_customer_address a WHERE u.user_id = '${userId}' AND a.customer_id = '${userId}' AND a.primary_address = 'true'`
+  // const strQueryA = `SELECT user_name, user_email, user_phone, gender,date_of_birth ,a.address AS primary_address, user_store, user_image, account_type FROM ecommerce.tb_user u, ecommerce.tb_customer_address a WHERE u.user_id = '${userId}' AND a.customer_id = '${userId}' AND a.primary_address = 'true'`
   const strQueryB = `SELECT user_name, user_email, user_phone, gender,date_of_birth , primary_address, user_store, user_image, account_type FROM ecommerce.tb_user WHERE user_id = '${userId}'`
   // (localhost:8001/api/user) => req.originalUrl.split('/')[3] = [undefined]
-  console.log(strQueryA)
+  // console.log(strQueryA)
   const strQuery = originalUrl === undefined ? strQueryB : strQueryB
 
   // console.log(originalUrl)
@@ -155,6 +155,61 @@ const GetFieldAlreadyInUse = (username, email, phone) => {
   })
 }
 
+const InsertNewStore = (data) => {
+  return new Promise(function (resolve, reject) {
+    db.query(
+        `INSERT INTO ecommerce.tb_store (
+            user_id, 
+            store_name, 
+            email, 
+            phone_number, 
+            store_description, 
+            store_image, 
+            created_at) 
+        VALUES (
+            '${data.user_id}', 
+            '${data.store_name}', 
+            '${data.email}',
+            '${data.phone_number}',
+            '${data.store_description}',
+            '${data.store_image}', 
+            now())`,
+        function (error, result) {
+          if (!error) {
+            resolve(result)
+          } else {
+            reject(new Error(error))
+          }
+        })
+  })
+}
+
+const GetMyStore = (userId) => {
+  const strQuery = `SELECT * FROM ecommerce.tb_store WHERE user_id = '${userId}'`
+
+  return new Promise(function (resolve, reject) {
+    db.query(strQuery, function (error, result) {
+      if (!error) {
+        resolve(result)
+      } else {
+        reject(new Error(error))
+      }
+    })
+  })
+}
+
+const UpdateStore = (data, userId) => {
+  return new Promise(function (resolve, reject) {
+    db.query('UPDATE ecommerce.tb_store SET ? WHERE user_id = ?', [data, userId], function (error, result) {
+      if (!error) {
+        resolve(result)
+      } else {
+        reject(new Error(error))
+      }
+    })
+  })
+}
+
 module.exports = {
   updateProfile: UpdateProfile,
   updatepassword: updatepassword,
@@ -165,5 +220,8 @@ module.exports = {
   getusername: getusername,
   insertnewuser: insertnewuser,
   getMyProfile: GetMyProfile,
-  getFieldAlreadyInUse: GetFieldAlreadyInUse
+  getFieldAlreadyInUse: GetFieldAlreadyInUse,
+  insertNewStore: InsertNewStore,
+  getMyStore: GetMyStore,
+  updateStore: UpdateStore
 }

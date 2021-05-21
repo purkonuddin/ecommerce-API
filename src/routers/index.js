@@ -8,6 +8,7 @@ const category = require('./category')
 const slide = require('./slide')
 const ongkir = require('./ongkir')
 const payment = require('./payment')
+const event = require('./event')
 
 router.get('/', function (req, res) {
   res.json({
@@ -22,4 +23,5 @@ router.use('/category', category)
 router.use('/slide', slide)
 router.use('/ongkir', ongkir)
 router.use('/payment', payment)
+router.use('/event', event)
 module.exports = router

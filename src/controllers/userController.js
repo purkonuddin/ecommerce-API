@@ -308,7 +308,7 @@ const GetUserById = async (req, res, next) => {
     req.body.object = 'user'
     req.body.action = 'get my profile data'
     req.body.myprofile = results
-    console.log(results)
+    // console.log(results)
 
     next()
   } catch (error) {
@@ -327,7 +327,7 @@ const EditProfile = async (req, res, next) => {
       date_of_birth: req.body.date_of_birth,
       user_image: req.body.file
     }
-    console.log('==>> ', dataUser, userId)
+    // console.log('==>> ', dataUser, userId)
     const [results] = await Promise.all([
       userModel.updateProfile(dataUser, userId)
     ])
@@ -493,6 +493,83 @@ const ResetPassword = async (req, res, next) => {
   }
 }
 
+const InsertDataMyStore = async (req, res, next) => {
+  let toko = []
+
+  try {
+    toko = req.mystore
+    // console.log('mystore=> ', toko.length)
+    const userId = req.userData.user_id
+    const dataStore = {
+      user_id: userId,
+      store_name: req.body.store_name,
+      email: req.body.email,
+      phone_number: req.body.phone_number,
+      store_description: req.body.store_description,
+      store_image: req.body.file
+    }
+    // jika sudah ada akan di update data tb_store nya
+    // jika belum tambahkan data ke tb_store
+    // console.log('InsertNewStore==> ', dataStore)
+    if (toko.length <= 0) {
+      const [results] = await Promise.all([
+        userModel.insertNewStore(dataStore)
+      ])
+      if (results.affectedRows !== 1) {
+        helpers.customErrorResponse(res, 400, 'gagal menyimpan')
+      } else {
+        delete req.userData
+        req.body.object = 'store'
+        req.body.action = 'post to tb_store'
+        req.body.results = results
+        req.body.message = 'success'
+        next()
+      }
+    } else {
+      const [results] = await Promise.all([
+        userModel.updateStore(dataStore, userId)
+      ])
+      if (results.changedRows !== 1 && results.affectedRows !== 1) {
+        helpers.customErrorResponse(res, 400, 'gagal updated')
+      } else {
+        delete req.userData
+        req.body.object = 'store'
+        req.body.action = 'update user\'s store'
+        req.body.results = results
+        req.body.message = 'success'
+        next()
+      }
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+const GetStoreById = async (req, res, next) => {
+  try {
+    const userId = req.userData.user_id
+    const [results] = await Promise.all([
+      userModel.getMyStore(userId)
+    ])
+    req.body.object = 'store'
+    req.body.action = 'get my store\'s data'
+    req.mystore = results
+    if (results.length > 0) {
+      req.body.id = results[0].id
+      req.body.store_name = results[0].store_name
+      req.body.email = results[0].email
+      req.body.phone_number = results[0].phone_number
+      req.body.store_image = results[0].store_image
+      req.body.store_description = results[0].store_description
+    }
+    // console.log('mystore ==> ', results.length)
+
+    next()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 module.exports = {
   login: LoginRev,
   logout: Logout,
@@ -505,5 +582,7 @@ module.exports = {
   insertAddress: InsertAddress,
   getAllCustomerAddress: GetAllCustomerAddress,
   sendResetLinkByEmail: SendResetLinkByEmail,
-  resetPassword: ResetPassword
+  resetPassword: ResetPassword,
+  insertStoreData: InsertDataMyStore,
+  getStoreById: GetStoreById
 }

@@ -143,7 +143,7 @@ const validateEmail = (req, res, next) => {
 }
 
 const validateUserAddress = (req, res, next) => {
-  console.log(req.body)
+  // console.log(req.body)
   try {
     if (!req.body.address) {
       helpers.customErrorResponse(res, 400, 'Please fillout the address')
@@ -161,6 +161,25 @@ const validateUserAddress = (req, res, next) => {
   }
 }
 
+const validateMyStore = (req, res, next) => {
+  // console.log(req)
+  try {
+    if (!req.body.store_name) {
+      helpers.customErrorResponse(res, 400, 'Please fillout the store_name')
+    } else if (!req.body.email) {
+      helpers.customErrorResponse(res, 400, 'Please fillout the email')
+    } else if (!req.body.phone_number) {
+      helpers.customErrorResponse(res, 400, 'Please fillout the phone_number')
+    } else if (!req.body.store_description) {
+      helpers.customErrorResponse(res, 400, 'Please fillout the store_description')
+    } else {
+      next()
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 module.exports = {
   validasiFormEditProfile: ValidasiFormEditProfile,
   isSeller: isSeller,
@@ -169,5 +188,6 @@ module.exports = {
   validateLogin: validateLogin,
   validateSignup: validateSignup,
   validateEmail: validateEmail,
-  validateUserAddress: validateUserAddress
+  validateUserAddress: validateUserAddress,
+  validateMyStore: validateMyStore
 }

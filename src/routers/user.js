@@ -19,5 +19,7 @@ router.route('/verifikasi-email/:token').get(userController.verifikasiEmail, sen
 router.route('/customer-address')
   .post(userMiddleware.isLoggedIn, userMiddleware.validateUserAddress, userController.insertAddress, sendResponse)
   .get(userMiddleware.isLoggedIn, userController.getAllCustomerAddress, sendResponse)
-//   .delete()
+router.route('/my-store')
+  .post(userMiddleware.isLoggedIn, userController.getStoreById, singleUploadMidleware, userController.insertStoreData, sendResponse)
+  .get(userMiddleware.isLoggedIn, userController.getStoreById, sendResponse)
 module.exports = router

@@ -63,6 +63,8 @@ app.use('/imgs-products', express.static('./src/assets/images/products'))
 app.use('/imgs-users', express.static('./src/assets/images/users'))
 app.use('/imgs-category', express.static('./src/assets/images/category'))
 app.use('/imgs-slide', express.static('./src/assets/images/slide'))
+app.use('/imgs-store', express.static('./src/assets/images/stores'))
+app.use('/imgs-event', express.static('./src/assets/images/event'))
 
 app.get('/', (req, res) => res.send('RestFull Api with nodejs, expressjs, mysql and sweger testing for Ecommerce Service'))
 // add routes

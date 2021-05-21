@@ -1,11 +1,67 @@
+// const { middleware } = require('express-paginate')
 const multer = require('multer')
 // const path = require('path')
+
+const EventImage = (req, res, next) => {
+  const object = {
+    directory: 'src/assets/images/event',
+    prefix: 'event-',
+    fileUrl: process.env.APP_URL_EVENT,
+    currentImages: ''
+  }
+  const multerStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, `${object.directory}`)
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname)
+    }
+  })
+
+  const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image')) {
+      cb(null, true)
+    } else {
+      cb(null, false)
+    }
+  }
+
+  const upload = multer({ storage: multerStorage, fileFilter: multerFilter })
+  const uploadFiles = upload.single('image')
+  uploadFiles(req, res, err => {
+    if (err) {
+      return res.send(err)
+    }
+    let image = ''
+    if (req.file === undefined) {
+      image = object.currentImages
+    } else {
+      image = `${object.fileUrl + req.file.filename}`
+    }
+    req.body.file = image
+    req.body.file_prefix = object.prefix
+
+    next()
+  })
+}
 
 const SingleImage = (req, res, next) => {
   const regExp = /[^A-Za-z0-9]/g
   const userId = req.userData.user_id
   const userName = req.userData.user_name.toLowerCase().replace(regExp, '')
-  const object = {
+  const originalUrl = req.originalUrl.split('/')
+
+  const object = originalUrl[4] === 'my-store' ? {
+    directory: 'src/assets/images/stores',
+    prefix: `${userId}-${req.userData.user_store.toLowerCase().replace(regExp, '')}`,
+    fileUrl: process.env.APP_URL_STORE,
+    currentImages: req.mystore.length <= 0 ? '' : req.mystore[0].store_image
+  } : originalUrl[3] === 'event' ? {
+    directory: 'src/assets/images/event',
+    prefix: 'event-',
+    fileUrl: process.env.APP_URL_EVENT,
+    currentImages: ''
+  } : {
     directory: 'src/assets/images/users',
     prefix: `${userId}-${userName}`,
     fileUrl: process.env.APP_URL_PROFILE,
@@ -144,5 +200,6 @@ const MultipleImages = (req, res, next) => {
 
 module.exports = {
   uploadMidleware: MultipleImages,
-  singleUploadMidleware: SingleImage
+  singleUploadMidleware: SingleImage,
+  eventImage: EventImage
 }
