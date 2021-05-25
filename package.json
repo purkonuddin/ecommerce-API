@@ -43,12 +43,10 @@
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/purkonuddin/ecommerce-API.git"
-  },
+  "repository": "git+https://github.com/purkonuddin/ecommerce-API.git",
   "bugs": {
     "url": "https://github.com/purkonuddin/ecommerce-API/issues"
   },
-  "homepage": "https://github.com/purkonuddin/ecommerce-API#readme"
+  "homepage": "https://github.com/purkonuddin/ecommerce-API#readme",
+  "private": true
 }

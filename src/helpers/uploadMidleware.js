@@ -46,6 +46,7 @@ const EventImage = (req, res, next) => {
 }
 
 const SingleImage = (req, res, next) => {
+  let dateNow = Date.now()
   const regExp = /[^A-Za-z0-9]/g
   const userId = req.userData.user_id
   const userName = req.userData.user_name.toLowerCase().replace(regExp, '')
@@ -61,7 +62,12 @@ const SingleImage = (req, res, next) => {
     prefix: 'event-',
     fileUrl: process.env.APP_URL_EVENT,
     currentImages: ''
-  } : {
+  } : originalUrl[3] === 'products' ? {
+    directory: 'src/assets/images/products',
+    prefix: dateNow,
+    fileUrl: process.env.APP_URL_PRODUCTS,
+    currentImages: ''
+  }:{
     directory: 'src/assets/images/users',
     prefix: `${userId}-${userName}`,
     fileUrl: process.env.APP_URL_PROFILE,
@@ -92,7 +98,7 @@ const SingleImage = (req, res, next) => {
     if (err) {
       return res.send(err)
     }
-    // console.log('adfasf=> ', `${req.file}`)
+    console.log('adfasf=> ', req)
     let image = ''
     if (req.file === undefined) {
       image = object.currentImages
@@ -107,7 +113,7 @@ const SingleImage = (req, res, next) => {
 }
 
 const MultipleImages = (req, res, next) => {
-  var dateNow = Date.now()
+  let dateNow = Date.now()
   const regExp = /[^A-Za-z0-9]/g
   const userId = req.userData.user_id
   const userName = req.userData.user_name.toLowerCase().replace(regExp, '')
@@ -125,20 +131,18 @@ const MultipleImages = (req, res, next) => {
     fileUrl: process.env.APP_URL_CATEGORY,
     currentImages: ''
   } : originalUrl[3] === 'slide' ? {
-    // jika upload product `${prdId}-${file.originalname}`
     directory: 'src/assets/images/slide',
     prefix: 'slide-' + dateNow,
     fileUrl: process.env.APP_URL_SLIDE,
     currentImages: ''
   } : {
-    // jika upload slide
     directory: 'src/assets/images/products',
     prefix: dateNow,
     fileUrl: process.env.APP_URL_PRODUCTS,
     currentImages: ''
   }
 
-  console.log(object)
+  // console.log(object)
 
   const multerStorage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -176,6 +180,8 @@ const MultipleImages = (req, res, next) => {
     } else if (err) {
       return res.send(err)
     }
+
+    // console.log('req.files==>>', req);
 
     /**
      * { fieldname: 'images',
