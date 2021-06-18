@@ -510,7 +510,7 @@ const InsertDataMyStore = async (req, res, next) => {
     }
     // jika sudah ada akan di update data tb_store nya
     // jika belum tambahkan data ke tb_store
-    // console.log('InsertNewStore==> ', dataStore)
+    console.log('InsertNewStore==> ', dataStore)
     if (toko.length <= 0) {
       const [results] = await Promise.all([
         userModel.insertNewStore(dataStore)

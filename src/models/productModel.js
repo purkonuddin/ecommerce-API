@@ -1,4 +1,5 @@
 require('dotenv').config()
+const { reject } = require('async')
 const db = require('../configs/db')
 // const uuid = require('uuid')
 
@@ -41,7 +42,7 @@ module.exports = {
         }
       })
     })
-  },
+  }, 
   Rows: (strQueryRow) => {
     return new Promise((resolve, reject) => {
       db.query(`${strQueryRow}`, (err, result) => {
@@ -109,7 +110,8 @@ module.exports = {
       })
     })
   },
-  insert: (data) => {
+  insertProduct: (data) => {
+    // console.log('model==>', data);
     return new Promise(function (resolve, reject) {
       db.query(
               `INSERT INTO ecommerce.tb_products ( 
@@ -130,14 +132,14 @@ module.exports = {
                 added_at, 
                 updated_at) 
               VALUES (
-                  '${data.product_id}', 
+                  '${data.product_id.toString()}', 
                   '${data.product_name}', 
                   '${data.product_description}',
                   '${data.product_image}',
                   '${data.product_category}',
                   '${data.product_price}', 
                   '${data.disc}',
-                  '${data.price_aft_disc}',
+                  '${data.price_aft_disc.toString()}',
                   '${data.product_stock}', 
                   '${data.seller}', 
                   '${data.product_rating}', 

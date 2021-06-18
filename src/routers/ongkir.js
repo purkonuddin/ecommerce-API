@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
+require('dotenv').config()
 const express = require('express')
 const router = express.Router()
 var http = require('https')
 const { init } = require('rajaongkir-node-js')
-const request = init('fda4439419134e27787758b092b9bc98', 'starter')
+const request = init(`${process.env.API_KEY_RAJAONGKIR}`, 'starter')
 const helpers = require('../helpers')
 
 router.get('/provinsi', function (req, res) {
@@ -63,6 +64,7 @@ router.post('/cost', function (req, res) {
     })
   } catch (error) {
     console.log(error)
+    // process.exit(1)
   }
 })
 

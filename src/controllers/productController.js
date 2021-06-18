@@ -70,58 +70,46 @@ const uploadImages = (req, res, next) => {
   })
 }
 
-const InsertProduct = (req, res, next) => {
-  const priceAftDisc = req.body.product_price - (req.body.product_price * req.body.disc)
-
-  const dataProduct = {
-    product_id: req.body.file_prefix, // helper/uploadMiddleware req.body.file_prefix (format: Date.now())
-    product_name: req.body.product_name,
-    product_description: req.body.product_description,
-    product_image: req.body.files, // helper/uploadMiddleware req.body.files
-    product_category: req.body.product_category,
-    product_price: req.body.product_price,
-    disc: req.body.disc,
-    price_aft_disc: priceAftDisc,
-    product_stock: req.body.product_stock,
-    seller: req.userData.user_store,
-    product_rating: req.body.product_rating,
-    product_condition: req.body.product_condition,
-    product_size: req.body.product_size,
-    product_color: req.body.product_color
-  }
-  productModel.insert(dataProduct).then((result) => {
-    // console.log(result)
-    /**
-     * fieldCount: 0,
-     * affectedRows: 1,
-     * insertId: 58,
-     * serverStatus: 2,
-     * warningCount: 0,
-     * message: '',
-     * protocol41: true,
-     * changedRows: 0
-     */
-    if (result.affectedRows === 1) {
-      req.body.object = 'products'
-      req.body.action = 'insert'
-      req.body.message = `data berhasil di tambahkan, insertId: ${result.insertId}`
-      req.body.data = result
-      req.body.id = result.insertId
-      req.body.product_id = dataProduct.product_id
-      req.body.product_image = dataProduct.product_image.split(', ')
-      req.body.product_size = dataProduct.product_size.split(', ')
-      req.body.product_color = dataProduct.product_color.split(', ')
-      next()
-    } else {
-      helpers.customErrorResponse(res, 400, 'tidak ada data tersimpan')
-      // return res.send({
-      //   object: 'product',
-      //   action: 'insert',
-      //   msg: 'tidak ada data tersimpan',
-      //   result: null
-      // })
+const InsertNewProduct = (req, res, next) => {
+  try {
+    const priceAftDisc = req.body.product_price - (req.body.product_price * req.body.disc)
+    const dataProduct = {
+      product_id: req.body.file_prefix, // helper/uploadMiddleware req.body.file_prefix (format: Date.now())
+      product_name: req.body.product_name,
+      product_description: req.body.product_description,
+      product_image: req.body.files, // helper/uploadMiddleware req.body.files
+      product_category: req.body.product_category,
+      product_price: req.body.product_price,
+      disc: req.body.disc,
+      price_aft_disc: priceAftDisc,
+      product_stock: req.body.product_stock,
+      seller: req.userData.user_store,
+      product_rating: req.body.product_rating,
+      product_condition: req.body.product_condition,
+      product_size: req.body.product_size,
+      product_color: req.body.product_color
     }
-  }).catch(err => new Error(err))
+    // console.log('InsertNewProduct==>',dataProduct);
+
+    productModel.insertProduct(dataProduct).then((result) => { 
+      if (result.affectedRows === 1) {
+        req.body.object = 'products'
+        req.body.action = 'insert'
+        req.body.message = `data berhasil di tambahkan, insertId: ${result.insertId}`
+        req.body.data = result
+        req.body.id = result.insertId
+        req.body.product_id = dataProduct.product_id
+        req.body.product_image = dataProduct.product_image.split(', ')
+        req.body.product_size = dataProduct.product_size.split(', ')
+        req.body.product_color = dataProduct.product_color.split(', ')
+        next()
+      } else {
+        helpers.customErrorResponse(res, 400, 'tidak ada data tersimpan') 
+      }
+    }).catch(err => new Error(err))
+  } catch (error) {
+    console.log(error);
+  } 
 }
 
 const delProduct = (req, res, next) => {
@@ -260,7 +248,7 @@ const getProdById = async (req, res, next) => {
         element.product_color = element.product_color.split(', ')
       }
     })
-    console.log(result[0])
+    // console.log(result[0])
 
     req.body.object = 'products'
     req.body.action = 'select by product_id'
@@ -354,8 +342,8 @@ const Sort = async (req, res, next) => {
   })
   const totalrows = rows[0].baris
   const pageCount = Math.ceil(totalrows / req.query.limit)
-  console.log('@results: ', results)
-  console.log('@rows: ', rows)
+  // console.log('@results: ', results)
+  // console.log('@rows: ', rows)
   req.body.object = 'products'
   req.body.has_more = paginate.hasNextPages(req)(pageCount)
   req.body.total_page = pageCount
@@ -372,7 +360,7 @@ const Sort = async (req, res, next) => {
 }
 
 const ReduceStock = async (req, res, next) => {
-  console.log(req.body)
+  // console.log(req.body)
   const cartQty = req.body.qty
   const productId = req.body.product_id
   const [updateStock] = await Promise.all([
@@ -428,7 +416,7 @@ const GetAll = async (req, res, next) => {
 
 module.exports = {
   uploadMidleware: uploadImages,
-  insertNewProduct: InsertProduct,
+  insertNewProduct: InsertNewProduct,
   deleteProduct: delProduct,
   removeImg: removeImgs,
   patch: editProduct,

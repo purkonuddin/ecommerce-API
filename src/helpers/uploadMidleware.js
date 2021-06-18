@@ -98,7 +98,7 @@ const SingleImage = (req, res, next) => {
     if (err) {
       return res.send(err)
     }
-    console.log('adfasf=> ', req)
+    // console.log('adfasf=> ', req)
     let image = ''
     if (req.file === undefined) {
       image = object.currentImages

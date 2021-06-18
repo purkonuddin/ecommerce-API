@@ -1,10 +1,7 @@
 require('dotenv').config()
-const express = require('express')
-const bodyParser = require('body-parser')
+const express = require('express') 
 const cors = require('cors')
-const cookieParser = require('cookie-parser')
-// const session = require('express-session')
-// const flash = require('express-flash')
+const cookieParser = require('cookie-parser') 
 const swaggerUI = require('swagger-ui-express')
 const swaggerDocument = require('./src/swagger-spec.json')
 const compress = require('compression')
@@ -44,10 +41,8 @@ app.use(compress())
 app.use(cors())
 app.listen(port, () => console.log(`\n This server is running on port ${port}, and use IP ${IP}`))
 app.use(logger('dev'))
-
-// app.use(cors(corsOptions))
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 
 // app.use(session({
