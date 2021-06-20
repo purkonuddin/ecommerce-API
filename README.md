@@ -74,6 +74,8 @@ exp:.
 </pre>
 <br/>
 <p>Sign-up <code>[post] sign-up post http://3.92.225.2:8001/api/v1/user/sign-up</code></p>
+<p>alur sing-up : validateSignup-> signUp-> SendEmail-> sendResponse </p>
+<p>jika signup gagal karna SendEmail error, hal ini terjadi karna badCredential. silahkan gunakan account yang sudah terdaftar seperti end point login diatas.</p>
 <pre>
   exp:.
   {
