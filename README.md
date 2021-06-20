@@ -63,12 +63,13 @@ API_KEY_RAJAONGKIR = ""
 
 ## End Point
 <h3>User</h3><hr/>
-<p>Login <code>[post] http://localhost:8001/api/v1/login</code></p>
+<p>Login <code>[post] http://3.92.225.2:8001/api/v1/login</code></p>
 <pre>
 exp:.
 {
     "login_email":"purkonud12119617@gmail.com",
-    "login_password":"pass123"
+    "login_password":"Pass123",
+    "login_account_type":"seller"
 }
 </pre>
 <br/>
