@@ -60,6 +60,11 @@ API_KEY_RAJAONGKIR = ""
   <img src="https://img.shields.io/badge/Visit%20on%20the-3.92.225.2-blue.svg?style=popout&logo=amazon-aws"/>
 </a> http://3.92.225.2:8001/api-docs/
 
+<p>jika anda mengakses api-docs/ akan mendapati error atau not respons, dikarnakan ada perubahan pada script. sebagai gantinya anda bisa gunakan postman. ini link nya:</p>
+<a href="https://www.getpostman.com/collections/2301f2e9a1e6d0eb00ba">
+  <img src="https://img.shields.io/badge/postman-https%3A%2F%2Fwww.getpostman.com%2Fcollections%2F2301f2e9a1e6d0eb00ba-orange"/>
+</a> POSTMAN
+
 
 ## End Point
 <h3>User</h3><hr/>
