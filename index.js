@@ -45,15 +45,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 
-// app.use(session({
-//   resave: false, // express-session deprecated undefined resave option; provide resave option index.js:15:9
-//   saveUninitialized: true, // express-session deprecated undefined saveUninitialized option; provide saveUninitialized option index.js:15:9
-//   secret: 'hubwiz app',
-//   cookie: { maxAge: 60 * 1000 * 30 }
-// }))
-
-// app.use(flash()) // flash memerlukan cookie dan session
-
 app.use('/imgs-products', express.static('./src/assets/images/products'))
 app.use('/imgs-users', express.static('./src/assets/images/users'))
 app.use('/imgs-category', express.static('./src/assets/images/category'))
