@@ -33,12 +33,25 @@ or test on <a href="http://3.92.225.2:8001/api-docs/#/">Swagger</a>
 
 ## Set up .env file
 Open .env file on your favorite code editor, and copy paste this code below :
-```
-PORT=8001
-HOST=localhost
-USER=root // default
-PASS= // default
-DATABASE=ecommerce 
+``` 
+PORT = 8001
+JWT_KEY= asdf1234
+IP = "3.92.225.2" 
+
+DB_HOST = "localhost"
+DB_USER = "root"
+DB_PASSWORD = ""
+DB_NAME = "ecommerce"
+ 
+APP_URL_PRODUCTS = "http://3.92.225.2:8001/imgs-products/"
+APP_URL_PROFILE = "http://3.92.225.2:8001/imgs-users/"
+APP_URL_CATEGORY = "http://3.92.225.2:8001/imgs-category/"
+APP_URL_SLIDE = "http://3.92.225.2:8001/imgs-slide/"
+APP_URL_STORE = "http://3.92.225.2:8001/imgs-store/"
+
+EMAIL_ADDRESS = ""
+EMAIL_PASS = ""
+API_KEY_RAJAONGKIR = ""
 ```
 
 ## Release
