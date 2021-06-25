@@ -56,7 +56,7 @@ API_KEY_RAJAONGKIR = ""
 
 ## Release
 
-<a href="http://3.92.225.2:8001/api-docs/">
+<a href="http://34.238.252.122:4441/api-docs/">
   <img src="https://img.shields.io/badge/Visit%20on%20the-3.92.225.2-blue.svg?style=popout&logo=amazon-aws"/>
 </a> swagger
 <p>jika anda mengakses api-docs/ akan mendapati sebagian error atau not respons, dikarnakan ada perubahan pada script. sebagai gantinya anda bisa gunakan postman. ini link nya:</p>
